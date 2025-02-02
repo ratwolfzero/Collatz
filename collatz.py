@@ -37,4 +37,4 @@ def plot_collatz(n):
     #plt.legend()
     plt.show()
 
-plot_collatz(123654738764539826)
+plot_collatz(27)

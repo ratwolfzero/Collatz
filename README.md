@@ -13,3 +13,5 @@ If n is odd, multiply it by 3 and add 1.
 Repeat the process until n reaches 1.
 
 Despite its simple rules, the Collatz conjecture remains an unsolved problem in mathematics, as no sequence has been found that does not eventually reach 1.
+
+![DLA](collatz.png)
