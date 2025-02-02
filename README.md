@@ -4,7 +4,7 @@
 
 ## Overview
 
-The Collatz sequence (also known as the 3x + 1 problem) is a mathematical sequence defined as follows:
+The Collatz sequence (also known as the 3n + 1 problem) is a mathematical sequence defined as follows:
 
 Start with any positive integer n.
 
