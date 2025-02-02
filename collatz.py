@@ -2,6 +2,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 from numba import njit
 
+def validate_input(n):
+    if not isinstance(n, int) or n <= 0:
+        raise ValueError("Input must be a positive integer.")
+    if n > 10**18:  # Limit to prevent excessive computation
+        raise ValueError("Input is too large. Please choose a smaller integer.")
+
 @njit
 def collatz_sequence(n):
     """Compute the Collatz sequence for a given number n."""
@@ -16,6 +22,7 @@ def collatz_sequence(n):
 
 def plot_collatz(n):
     """Generate and plot the Collatz sequence for a given number n."""
+    validate_input(n)  # Validate input
     seq = collatz_sequence(n)  # Compute sequence
     steps = np.arange(len(seq))  # X-axis: step index
     
@@ -30,6 +37,4 @@ def plot_collatz(n):
     #plt.legend()
     plt.show()
 
-# Example usage
-plot_collatz(27)  # Try with different values
-
+plot_collatz(123654738764539826)
