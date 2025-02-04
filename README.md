@@ -6,9 +6,8 @@
 
 The Collatz sequence, also known as the 3n + 1 problem, is named after the German mathematician Lothar Collatz, who first introduced it in 1937. Although it is a simple recursive process, the behavior of the sequence remains one of the most intriguing unsolved problems in mathematics. Despite its straightforward formulation, the sequence's complexity and the absence of a general proof for all positive integers have kept mathematicians engaged for decades.  
 
-Overview  
 
-The Collatz sequence is a mathematical sequence defined by the following simple rules:  
+## The Collatz sequence is a mathematical sequence defined by the following simple rules:  
 
 Start with any positive integern.  
 
