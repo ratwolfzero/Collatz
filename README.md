@@ -8,7 +8,7 @@ The Collatz sequence, also known as the 3n + 1 problem, is named after the Germa
 
 ### The Collatz sequence is a mathematical sequence defined by the following simple rules  
 
-Start with any positive integern.  
+Start with any positive integer n.  
 
 If n is even, divide it by 2.  
 
