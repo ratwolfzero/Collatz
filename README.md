@@ -8,12 +8,12 @@ The Collatz sequence, also known as the 3n + 1 problem, is named after the Germa
 
 ### The Collatz sequence is a mathematical sequence defined by the following simple rules  
 
-- Start with any positive integer n.  
+- Start with any positive integer n  
 
-- If n is even, divide it by 2.  
+- If n is even, divide it by 2  
 
-- If n is odd, multiply it by 3 and add 1.  
+- If n is odd, multiply it by 3 and add 1  
 
-- Repeat the process until n reaches 1.  
+- Repeat the process until n reaches 1  
 
 Despite its simple rules, the Collatz conjecture remains an unsolved problem in mathematics. The conjecture posits that no matter what positive integer you start with, the sequence will always eventually reach 1. Although no counterexample has been found, a general proof or disproof has yet to be discovered.
