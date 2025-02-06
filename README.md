@@ -17,6 +17,6 @@ a_{k+1} = \begin{cases}
    \end{cases}
 $$
 
-- for $$k ≥ 0$$ the sequence terminates when $$a_k = 1$$
+- The sequence terminates when $$aₖ = 1$$ for some $$k > 0$$
 
 Despite its simple rules, the Collatz conjecture remains an unsolved problem in mathematics. The conjecture posits that no matter what positive integer you start with, the sequence will always eventually reach 1. Although no counterexample has been found, a general proof or disproof has yet to be discovered.
