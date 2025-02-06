@@ -19,4 +19,6 @@ $$
 
 - The sequence terminates when $$a_k = 1$$ for some $$k > 0$$
 
+Although the sequence theoretically enters the infinite cycle (1,4,2,1) once it reaches 1, our implementation stops at 1, following the convention used in most computational treatments of the Collatz sequence.
+
 Despite its simple rules, the Collatz conjecture remains an unsolved problem in mathematics. The conjecture posits that no matter what positive integer you start with, the sequence will always eventually reach 1. Although no counterexample has been found, a general proof or disproof has yet to be discovered.
