@@ -11,7 +11,7 @@ The Collatz sequence, also known as the 3n + 1 problem, is named after the Germa
 - Let $$a_0 = n$$ be the initial positive integer. The subsequent terms of the sequence are defined as follows:
 
 $$
-a_{k+1} = \begin{cases} 
+a_{k+1} = \begin{cases}
       \frac{a_k}{2} & \text{if } a_k \text{ is even} \\
       3a_k + 1 & \text{if } a_k \text{ is odd}
    \end{cases}
