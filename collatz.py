@@ -2,15 +2,34 @@ import numpy as np
 import matplotlib.pyplot as plt
 from numba import njit
 
+# --- Input Validation ---
+
+
 def validate_input(n):
     if not isinstance(n, int) or n <= 0:
         raise ValueError("Input must be a positive integer.")
-    if n > 10**18:  # Limit to prevent excessive computation
-        raise ValueError("Input is too large. Please choose a smaller integer.")
+    if n > 10**30:
+        raise ValueError("Input too large. Please choose a smaller integer.")
+
+# --- Fast Numba-accelerated Collatz sequence for 64-bit ints ---
+
 
 @njit
-def collatz_sequence(n):
-    """Compute the Collatz sequence for a given number n."""
+def collatz_sequence_fast(n):
+    sequence = []
+    while n != 1:
+        sequence.append(n)
+        if n % 2 == 0:
+            n = n // 2
+        else:
+            n = 3 * n + 1
+    sequence.append(1)
+    return sequence
+
+# --- Pure Python Collatz sequence for big integers ---
+
+
+def collatz_sequence_py(n):
     sequence = [n]
     while n != 1:
         if n % 2 == 0:
@@ -20,21 +39,46 @@ def collatz_sequence(n):
         sequence.append(n)
     return sequence
 
-def plot_collatz(n):
-    """Generate and plot the Collatz sequence for a given number n."""
-    validate_input(n)  # Validate input
-    seq = collatz_sequence(n)  # Compute sequence
-    steps = np.arange(len(seq))  # X-axis: step index
-    
+# --- Main Plotting Function ---
+
+
+def plot_collatz(n, use_log_scale=False):
+    validate_input(n)
+
+    try:
+        if n <= np.iinfo(np.int64).max:
+            seq = collatz_sequence_fast(n)
+        else:
+            seq = collatz_sequence_py(n)
+    except Exception as e:
+        raise RuntimeError(f"Failed to compute Collatz sequence: {e}")
+
+    steps = np.arange(len(seq))
     plt.figure(figsize=(10, 5))
-    plt.plot(steps, seq, marker='o', linestyle='-', markersize=4, label=f'Collatz({n})')
-    
+    plt.plot(steps, seq, marker='o', linestyle='-',
+             markersize=4, label=f'Collatz({n})')
+
     plt.xlabel("Step")
     plt.ylabel("Value")
     plt.title(f"Collatz Sequence for {n}")
-    #plt.yscale('log')  # Log scale for better visualization
+    if use_log_scale:
+        plt.yscale('log')
     plt.grid(True, which="both", linestyle="--", linewidth=0.5)
-    #plt.legend()
+    # plt.legend()
+    plt.tight_layout()
     plt.show()
 
-plot_collatz(27)
+
+# --- Main with Query ---
+if __name__ == "__main__":
+    try:
+        user_input = input(
+            "Enter a positive integer for the Collatz sequence: ")
+        n = int(user_input.strip())
+
+        scale_input = input("Use logarithmic y-scale? (y/n): ").strip().lower()
+        use_log = scale_input == 'y'
+
+        plot_collatz(n, use_log_scale=use_log)
+    except ValueError as e:
+        print(f"Error: {e}")
