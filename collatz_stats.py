@@ -27,11 +27,11 @@ def compute_stopping_times(max_n):
 
 def plot_stopping_times(xs, ys):
     plt.figure(figsize=(12, 6))
-    plt.scatter(xs, ys, s=1, alpha=0.6, label='Stopping time')
+    plt.scatter(xs, ys, s=1, alpha=0.6, color='red', label='Stopping time')
     
     # Highlight n = 27
     n_27_index = np.where(xs == 27)[0][0]
-    plt.scatter(xs[n_27_index], ys[n_27_index], color='red', s=40, label='n = 27 (s = {})'.format(ys[n_27_index]))
+    plt.scatter(xs[n_27_index], ys[n_27_index], color='blue', s=20, label='n = 27 (s = {})'.format(ys[n_27_index]))
 
     plt.title('Collatz Stopping Times for n = 1 to {}'.format(xs[-1]))
     plt.xlabel('Starting number n')
