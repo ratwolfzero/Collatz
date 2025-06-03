@@ -8,7 +8,7 @@ The Collatz sequence, also known as the 3n + 1 problem, is named after the Germa
 
 **The Collatz sequence is defined by the following simple rules:**
 
-- Let $$a_0 = n$$ be the initial positive integer. The subsequent terms of the sequence are defined as follows:
+- Let $$a_0 = n$$ be any positive integer. Define the Collatz sequence {ak} recursively by:
 
 $$
 \large
@@ -19,8 +19,8 @@ a_{k+1} = \begin{cases}
 \large
 $$
 
-- The sequence terminates when $$a_k = 1$$ for some $$k > 0$$
+- The Collatz Conjecture asserts that for all starting values n∈N+, the sequence eventually reaches 1. Once the sequence reaches 1, it enters the cycle 1→4→2→1.
 
-Although the sequence theoretically enters the infinite cycle 1→4→2→1 once it reaches 1, the implementation stops at 1, following the convention used in most computational treatments of the Collatz sequence.
+In most computational implementations and visualisations, the sequence is conventionally considered to stop at the first occurrence of 1.
 
 Despite its simple rules, the Collatz conjecture remains an unsolved problem in mathematics. The conjecture posits that no matter what positive integer you start with, the sequence will always eventually reach 1. Although no counterexample has been found, a general proof or disproof has yet to be discovered.
