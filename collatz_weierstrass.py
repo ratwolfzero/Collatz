@@ -54,7 +54,6 @@ def plot_histogram(ys):
     plt.ylabel('Frequency')
     plt.tight_layout()
 
-# --- Your existing functions (collatz_sequence, stopping_time, compute_stopping_times, plot_stopping_times, plot_histogram) ---
 
 def collatz_sequence(n):
     """Returns the Collatz sequence starting at n."""
@@ -105,7 +104,7 @@ def plot_histogram(ys):
     plt.tight_layout()
     plt.show()               
 
-# --- Weierstrass function (from previous response) ---
+# --- Weierstrass function ---
 def weierstrass_function(x, a=0.5, b=3, num_terms=100):
     """
     Generates values for the Weierstrass function.
@@ -118,7 +117,7 @@ def weierstrass_function(x, a=0.5, b=3, num_terms=100):
         result += (a**k) * np.cos((b**k) * np.pi * x)
     return result
 
-# --- Combined plot for moving average and Weierstrass (from previous response) ---
+# --- Combined plot for moving average and Weierstrass ---
 def plot_moving_average_with_weierstrass(xs, ys, window=100, weierstrass_a=0.5, weierstrass_b=3, weierstrass_terms=100):
     moving_avg = np.convolve(ys, np.ones(window)/window, mode='valid')
     
@@ -145,7 +144,7 @@ def plot_moving_average_with_weierstrass(xs, ys, window=100, weierstrass_a=0.5, 
     plt.show()
 
 
-# --- NEW FUNCTION: Plotting the numerical derivative ---
+# --- Plotting the numerical derivative ---
 def plot_numerical_derivative(xs, ys, window=100):
     moving_avg = np.convolve(ys, np.ones(window)/window, mode='valid')
     
