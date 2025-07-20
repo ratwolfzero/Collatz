@@ -172,18 +172,32 @@ def plot_numerical_derivative(xs, ys, window=100):
     
 
 
-def plot_fft_analysis(moving_avg, window=200, sample_spacing=1):
-    """
-    Perform FFT on the moving average, plot the power spectrum, and estimate the power-law decay.
-    """                             
+def plot_fft_analysis(moving_avg, window_type='hann', sample_spacing=1):
     n = len(moving_avg)
-    window = windows.blackman(len(moving_avg))
-    windowed_data = (moving_avg - np.mean(moving_avg)) * window
+    
+    # 1. Choose the window function
+    if window_type == 'hann':
+        win = windows.hann(n)
+    elif window_type == 'hamming':
+        win = windows.hamming(n)
+    elif window_type == 'blackman':
+        win = windows.blackman(n)
+    elif window_type == 'rectangular': # No explicit window, effectively a rectangular one
+        win = np.ones(n)
+    else:
+        raise ValueError("Unsupported window type. Choose 'hann', 'hamming', 'blackman', or 'rectangular'.")
+
+    # 2. Remove DC component and apply the chosen window
+    windowed_data = (moving_avg - np.mean(moving_avg)) * win
+    
     yf = fft(windowed_data)
-    #yf = fft(moving_avg - np.mean(moving_avg))  # Remove DC offset
     xf = fftfreq(n, sample_spacing)[:n//2]      # Positive frequencies
     power = np.abs(yf[0:n//2]) ** 2             # Power spectrum
 
+    # ... rest of your plotting and fitting code ...
+    # Make sure the normalization of power is correct if comparing absolute magnitudes
+    # For power law exponents, relative magnitudes are key, so absolute scaling might not be critical here.
+    
     # Plot
     plt.figure(figsize=(12, 6))
     plt.loglog(xf[1:], power[1:], color='blue', label='Power spectrum')  # Skip xf[0] (DC)
@@ -193,20 +207,23 @@ def plot_fft_analysis(moving_avg, window=200, sample_spacing=1):
     freqs_fit = xf[1:][mask]                                                                                    
     power_fit = power[1:][mask]
     
+    beta = None # Initialize beta
     if len(freqs_fit) > 1:
         coeffs = np.polyfit(np.log(freqs_fit), np.log(power_fit), 1)
         beta = -coeffs[0]        
         plt.plot(freqs_fit, np.exp(coeffs[1]) * freqs_fit**coeffs[0], 
                 'r--', label=f'Fit: β = {beta:.2f}')                         
     
-    plt.title(f'FFT of Collatz Moving Average (window={window})')
+    plt.title(f'FFT of Collatz Moving Average ({window_type.capitalize()} Window)')
     plt.xlabel('Frequency (1/n)')
     plt.ylabel('Power')
     plt.grid(True, which="both", ls="-")
     plt.legend()
     plt.tight_layout()
     plt.show()
-    print(f"Power-law exponent (beta): {beta:.2f}")
+    if beta is not None:
+        print(f"Power-law exponent (beta): {beta:.2f} with {window_type} window")
+
 
 if __name__ == "__main__":
     max_n = 50000                            
@@ -222,8 +239,13 @@ if __name__ == "__main__":
     plot_numerical_derivative(xs, ys, window=200)  # Use the same window for consistency
 
     # Compute the moving average and run FFT analysis
-    window = 200
-    moving_avg = np.convolve(ys, np.ones(window)/window, mode='valid')
-    plot_fft_analysis(moving_avg, window=window, sample_spacing=1)
+    window_ma_size = 200 # Renamed to avoid confusion with FFT window
+    moving_avg = np.convolve(ys, np.ones(window_ma_size)/window_ma_size, mode='valid')
+    
+    # Test with different window types
+    plot_fft_analysis(moving_avg, window_type='rectangular', sample_spacing=1)
+    plot_fft_analysis(moving_avg, window_type='hann', sample_spacing=1)
+    plot_fft_analysis(moving_avg, window_type='hamming', sample_spacing=1)
+    plot_fft_analysis(moving_avg, window_type='blackman', sample_spacing=1)
     
     
