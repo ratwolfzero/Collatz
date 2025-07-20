@@ -210,7 +210,7 @@ def plot_fft_analysis(moving_avg, window=200, sample_spacing=1):
     print(f"Power-law exponent (beta): {beta:.2f}")
 
 if __name__ == "__main__":
-    max_n = 50000                               
+    max_n = 50000                            
     xs, ys = compute_stopping_times(max_n)
 
     # plot_stopping_times(xs, ys)

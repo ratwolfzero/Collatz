@@ -64,7 +64,7 @@ def plot_moving_average(xs, ys, window=100):
     plt.show()
 
 if __name__ == "__main__":
-    max_n = 10000  # You can increase this to 100000 or more
+    max_n = 100000  # You can increase this to 100000 or more
     xs, ys = compute_stopping_times(max_n)
 
     plot_stopping_times(xs, ys)
