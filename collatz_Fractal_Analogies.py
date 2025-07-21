@@ -237,7 +237,7 @@ if __name__ == "__main__":
     plot_numerical_derivative(xs, ys, window=200)
 
     # Compute the moving average and run FFT analysis
-    window_ma_size = 200  # Renamed to avoid confusion with FFT window
+    window_ma_size = 200 # Renamed to avoid confusion with FFT window
     moving_avg = np.convolve(ys, np.ones(
         window_ma_size)/window_ma_size, mode='valid')
 
