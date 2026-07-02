@@ -46,8 +46,25 @@ Even if it does not solve the conjecture, this perspective can be valuable for a
 
 So the idea is not that one has found a new mechanism for proving convergence. It is rather that one has found a different coordinate system in which the problem looks more structured and more interpretable.
 
+## How to read the figures
+
+The accompanying figures are intended to make the idea immediate:
+
+- `orbit.png` shows the accelerated Collatz orbit, the numeric values visited by the sequence.
+- `parity_shadow.png` shows the parity word for the same orbit, with each step recorded as `even` or `odd`.
+- `combined.png` overlays the numeric orbit and the parity shadow, so the reader can see both representations on the same step axis.
+- `orbit_plus_parity.png` is an illustrative example for the starting value 27, showing how the orbit and its parity word are linked.
+
+The key visual point is:
+
+- the numeric orbit is the arithmetic layer;
+- the parity word is the symbolic shadow;
+- the two describe the same underlying Collatz evolution from different perspectives.
+
 ## A short version
 
 A serious way to state the idea is:
 
 > The Collatz orbit can be encoded by its parity pattern. In the accelerated formulation, this encoding makes the symbolic dynamics very simple. The remaining difficulty lies in the arithmetic condition that selects which symbolic sequences actually come from ordinary integers. This is a useful reformulation and visualization of the problem, not a resolution of it.
+
+> In the figures, the orbit values are the arithmetic layer and the parity shadow is the symbolic layer; the remaining challenge is understanding which parity words are compatible with integer orbits.

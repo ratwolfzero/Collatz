@@ -40,7 +40,7 @@ def make_plot_2(values, parities, out_path):
     ax.set_yticklabels(['even', 'odd'])
     ax.set_title('Parity shadow')
     ax.set_xlabel('Step')
-    ax.set_ylabel('Parity')
+    ax.set_ylabel('Parity (0 = even, 1 = odd)')
     ax.grid(alpha=0.3)
     fig.tight_layout()
     fig.savefig(out_path, dpi=180)
@@ -49,32 +49,39 @@ def make_plot_2(values, parities, out_path):
 
 def make_plot_3(values, parities, out_path):
     fig, ax = plt.subplots(figsize=(8, 3.2))
-    ax.plot(range(len(values)), values, marker='o', linewidth=2, color='#2ca02c')
+    ax.plot(range(len(values)), values, marker='o', linewidth=2, color='#2ca02c', label='Orbit')
     ax2 = ax.twinx()
-    ax2.step(range(len(parities)), parities, where='mid', color='#d62728', linewidth=1.5, alpha=0.8)
+    ax2.step(range(len(parities)), parities, where='mid', color='#d62728', linewidth=1.5, alpha=0.8, label='Parity shadow')
     ax2.set_ylim(-0.1, 1.1)
     ax2.set_yticks([0, 1])
     ax2.set_yticklabels(['even', 'odd'])
     ax.set_title('Orbit and parity shadow together')
     ax.set_xlabel('Step')
     ax.set_ylabel('Value')
-    ax2.set_ylabel('Parity')
+    ax2.set_ylabel('Parity (0 = even, 1 = odd)')
     fig.tight_layout()
     fig.savefig(out_path, dpi=180)
     plt.close(fig)
 
 
-def make_plot_4(out_path):
+def make_plot_4(values, parities, out_path):
     fig, ax = plt.subplots(figsize=(8, 4))
-    n = 27
-    values, parities = collatz_accelerated(n, max_steps=25)
-    ax.plot(range(len(values)), values, marker='o', linewidth=2, color='#9467bd')
+    ax.plot(range(len(values)), values, marker='o', linewidth=2, color='#9467bd', label='Orbit')
     ax.set_title('Illustrative example: starting from 27')
     ax.set_xlabel('Accelerated step')
     ax.set_ylabel('Value')
     ax.grid(alpha=0.3)
+
+    ax2 = ax.twinx()
+    ax2.step(range(len(parities)), parities, where='mid', color='#d62728', linewidth=1.5, alpha=0.8, label='Parity shadow')
+    ax2.set_ylim(-0.1, 1.1)
+    ax2.set_yticks([0, 1])
+    ax2.set_yticklabels(['even', 'odd'])
+    ax2.set_ylabel('Parity (0 = even, 1 = odd)')
+
     ax.text(0.02, 0.98, 'The parity word is the symbolic shadow of the orbit.',
             transform=ax.transAxes, va='top', ha='left', fontsize=10, style='italic')
+
     fig.tight_layout()
     fig.savefig(out_path, dpi=180)
     plt.close(fig)
@@ -90,7 +97,7 @@ def main():
     make_plot_1(values, parities, os.path.join(out_dir, 'orbit.png'))
     make_plot_2(values, parities, os.path.join(out_dir, 'parity_shadow.png'))
     make_plot_3(values, parities, os.path.join(out_dir, 'combined.png'))
-    make_plot_4(os.path.join(out_dir, 'summary.png'))
+    make_plot_4(values, parities, os.path.join(out_dir, 'orbit_plus_parity.png'))
 
     print(f'Generated figures in {out_dir}')
 
