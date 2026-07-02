@@ -66,5 +66,4 @@ The key visual point is:
 A serious way to state the idea is:
 
 > The Collatz orbit can be encoded by its parity pattern. In the accelerated formulation, this encoding makes the symbolic dynamics very simple. The remaining difficulty lies in the arithmetic condition that selects which symbolic sequences actually come from ordinary integers. This is a useful reformulation and visualization of the problem, not a resolution of it.
-
 > In the figures, the orbit values are the arithmetic layer and the parity shadow is the symbolic layer; the remaining challenge is understanding which parity words are compatible with integer orbits.
