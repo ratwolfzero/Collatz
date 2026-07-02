@@ -80,10 +80,81 @@ class CollatzShadowExplorer(QMainWindow):
         main_layout.setSpacing(14)
 
         controls_group = QGroupBox("Interactive controls")
-        controls_group.setStyleSheet(
-            "QGroupBox { font-weight: 600; background-color: #f8fbff; color: #18324a; border: 1px solid #b9c5d4; border-radius: 10px; margin-top: 8px; padding-top: 8px; }"
-            "QGroupBox::title { subcontrol-origin: margin; left: 10px; padding: 0 6px; }"
-        )
+        controls_group.setStyleSheet("""
+QGroupBox {
+    font-weight: 600;
+    background-color: #f8fbff;
+    color: #18324a;
+    border: 1px solid #b9c5d4;
+    border-radius: 10px;
+    margin-top: 8px;
+    padding-top: 8px;
+}
+
+QGroupBox::title {
+    subcontrol-origin: margin;
+    left: 10px;
+    padding: 0 6px;
+    color: #18324a;
+}
+
+/* =========================
+   FIX INPUT READABILITY
+   ========================= */
+
+QLabel {
+    color: #18324a;
+}
+
+/* Spinboxes (your main issue) */
+QSpinBox {
+    background-color: #ffffff;
+    color: #111827;
+    border: 1px solid #94a3b8;
+    border-radius: 6px;
+    padding: 4px 6px;
+}
+
+QSpinBox:hover {
+    border: 1px solid #64748b;
+}
+
+QSpinBox:focus {
+    border: 2px solid #2b6cb0;
+}
+
+/* ComboBox (preset selector) */
+QComboBox {
+    background-color: #ffffff;
+    color: #111827;
+    border: 1px solid #94a3b8;
+    border-radius: 6px;
+    padding: 4px 6px;
+}
+
+QComboBox:hover {
+    border: 1px solid #64748b;
+}
+
+QComboBox:focus {
+    border: 2px solid #2b6cb0;
+}
+
+/* Dropdown popup readability */
+QComboBox QAbstractItemView {
+    background-color: #ffffff;
+    color: #111827;
+    selection-background-color: #2b6cb0;
+    selection-color: white;
+    border: 1px solid #94a3b8;
+}
+
+/* Optional: makes disabled state readable instead of washed out */
+QSpinBox:disabled, QComboBox:disabled {
+    background-color: #e5e7eb;
+    color: #6b7280;
+}
+""")
         controls_layout = QVBoxLayout(controls_group)
 
         form_layout = QFormLayout()

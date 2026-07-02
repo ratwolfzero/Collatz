@@ -123,14 +123,85 @@ class CollatzShadowExplorer(QMainWindow):
         controls_layout.setSpacing(12)
 
         controls_group = QGroupBox("Interactive controls")
-        controls_group.setStyleSheet(
-            "QGroupBox { font-weight: 600; background-color: #1a1a1a; color: #f8fafc; border: 1px solid #3a3a3a; border-radius: 10px; margin-top: 8px; padding-top: 8px; }"
-            "QGroupBox::title { subcontrol-origin: margin; left: 10px; padding: 0 6px; color: #f8fafc; }"
-            "QLabel, QCheckBox { color: #f8fafc; font-weight: 500; }"
-            "QSpinBox, QComboBox { background-color: #232323; color: #f8fafc; border: 1px solid #4b4b4b; border-radius: 5px; padding: 4px 6px; min-height: 22px; }"
-            "QSpinBox::up-button, QSpinBox::down-button, QComboBox::drop-down { background-color: #2d2d2d; border: 1px solid #4b4b4b; }"
-            "QComboBox QAbstractItemView { background-color: #232323; color: #f8fafc; selection-background-color: #3a3a3a; selection-color: #ffffff; }"
-        )
+        controls_group.setStyleSheet("""
+QGroupBox {
+    font-weight: 600;
+    background-color: #1b1f24;
+    color: #f8fafc;
+    border: 1px solid #2d333b;
+    border-radius: 10px;
+    margin-top: 8px;
+    padding-top: 8px;
+}
+
+QGroupBox::title {
+    subcontrol-origin: margin;
+    left: 10px;
+    padding: 0 6px;
+    color: #f8fafc;
+}
+
+/* ===== TEXT ===== */
+QLabel {
+    color: #e5e7eb;
+}
+
+/* ===== CHECKBOX FIX (IMPORTANT) ===== */
+QCheckBox {
+    color: #e5e7eb;
+    spacing: 6px;
+}
+
+QCheckBox::indicator {
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+    border: 1px solid #4b5563;
+    background-color: #111827;
+}
+
+QCheckBox::indicator:checked {
+    background-color: #2b6cb0;
+    border: 1px solid #2b6cb0;
+}
+
+/* ===== INPUT FIELDS ===== */
+QSpinBox, QComboBox {
+    background-color: #111827;
+    color: #f8fafc;
+    border: 1px solid #374151;
+    border-radius: 6px;
+    padding: 4px 6px;
+    min-height: 24px;
+}
+
+/* Focus visibility */
+QSpinBox:focus, QComboBox:focus {
+    border: 2px solid #2b6cb0;
+}
+
+/* Buttons inside spinbox / dropdown */
+QSpinBox::up-button, QSpinBox::down-button,
+QComboBox::drop-down {
+    background-color: #1f2937;
+    border: none;
+}
+
+/* Dropdown menu */
+QComboBox QAbstractItemView {
+    background-color: #111827;
+    color: #f8fafc;
+    selection-background-color: #2b6cb0;
+    selection-color: white;
+    border: 1px solid #374151;
+}
+
+/* Disabled state */
+QSpinBox:disabled, QComboBox:disabled {
+    background-color: #0f172a;
+    color: #6b7280;
+}
+""")
         controls_group_layout = QVBoxLayout(controls_group)
 
         form_layout = QFormLayout()
