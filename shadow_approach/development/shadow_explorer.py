@@ -1,27 +1,3 @@
-import os
-import sys
-from collections import Counter
-
-import matplotlib
-matplotlib.use("QtAgg")
-import matplotlib.pyplot as plt
-import numpy as np
-from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg, NavigationToolbar2QT
-from matplotlib.figure import Figure
-
-plt.rcParams.update(
-    {
-        "axes.titlesize": 12,
-        "axes.labelsize": 10,
-        "axes.titleweight": "bold",
-        "axes.labelweight": "bold",
-        "xtick.labelsize": 9,
-        "ytick.labelsize": 9,
-        "legend.fontsize": 9,
-        "font.family": "DejaVu Sans",
-    }
-)
-from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import (
     QApplication,
     QCheckBox,
@@ -37,6 +13,30 @@ from PyQt6.QtWidgets import (
     QSpinBox,
     QVBoxLayout,
     QWidget,
+)
+from PyQt6.QtCore import Qt
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg, NavigationToolbar2QT
+import numpy as np
+import matplotlib.pyplot as plt
+import os
+import sys
+from collections import Counter
+
+import matplotlib
+matplotlib.use("QtAgg")
+
+plt.rcParams.update(
+    {
+        "axes.titlesize": 12,
+        "axes.labelsize": 10,
+        "axes.titleweight": "bold",
+        "axes.labelweight": "bold",
+        "xtick.labelsize": 9,
+        "ytick.labelsize": 9,
+        "legend.fontsize": 9,
+        "font.family": "DejaVu Sans",
+    }
 )
 
 
@@ -92,7 +92,8 @@ class CollatzShadowExplorer(QMainWindow):
 
         self.summary_label = QLabel()
         self.summary_label.setWordWrap(True)
-        self.summary_label.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignTop)
+        self.summary_label.setAlignment(
+            Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignTop)
         self.summary_label.setMinimumHeight(88)
         self.summary_label.setStyleSheet(
             "background-color: #f2f2f2; border: 1px solid #c2c2c2; border-radius: 10px; padding: 10px; color: #1f3044;"
@@ -107,7 +108,8 @@ class CollatzShadowExplorer(QMainWindow):
         plot_box_layout = QVBoxLayout(plot_box)
         plot_box_layout.setContentsMargins(8, 8, 8, 8)
         plot_box_layout.setSpacing(4)
-        plot_box_layout.addWidget(self.toolbar, alignment=Qt.AlignmentFlag.AlignLeft)
+        plot_box_layout.addWidget(
+            self.toolbar, alignment=Qt.AlignmentFlag.AlignLeft)
         plot_box_layout.addWidget(self.canvas)
         plot_layout.addWidget(plot_box)
 
@@ -115,7 +117,8 @@ class CollatzShadowExplorer(QMainWindow):
         controls_scroll.setWidgetResizable(True)
         controls_scroll.setMinimumWidth(320)
         controls_scroll.setMaximumWidth(360)
-        controls_scroll.setStyleSheet("QScrollArea { background: transparent; border: none; }")
+        controls_scroll.setStyleSheet(
+            "QScrollArea { background: transparent; border: none; }")
 
         controls_widget = QWidget(self)
         controls_layout = QVBoxLayout(controls_widget)
@@ -123,85 +126,87 @@ class CollatzShadowExplorer(QMainWindow):
         controls_layout.setSpacing(12)
 
         controls_group = QGroupBox("Interactive controls")
+
         controls_group.setStyleSheet("""
-QGroupBox {
-    font-weight: 600;
-    background-color: #1b1f24;
-    color: #f8fafc;
-    border: 1px solid #2d333b;
-    border-radius: 10px;
-    margin-top: 8px;
-    padding-top: 8px;
-}
+        QGroupBox {
+        font-weight: 600;
+        background-color: #1b1f24;
+        color: #f8fafc;
+        border: 1px solid #2d333b;
+        border-radius: 10px;
+        margin-top: 8px;
+        padding-top: 8px;
+        }
 
-QGroupBox::title {
-    subcontrol-origin: margin;
-    left: 10px;
-    padding: 0 6px;
-    color: #f8fafc;
-}
+        QGroupBox::title {
+        subcontrol-origin: margin;
+        left: 10px;
+        padding: 0 6px;
+        color: #f8fafc;
+        }
 
-/* ===== TEXT ===== */
-QLabel {
-    color: #e5e7eb;
-}
+        /* ===== TEXT ===== */
+        QLabel {
+        color: #e5e7eb;
+        }
 
-/* ===== CHECKBOX FIX (IMPORTANT) ===== */
-QCheckBox {
-    color: #e5e7eb;
-    spacing: 6px;
-}
+        /* ===== CHECKBOX FIX (IMPORTANT) ===== */
+        QCheckBox {
+        color: #e5e7eb;
+        spacing: 6px;
+        }
 
-QCheckBox::indicator {
-    width: 14px;
-    height: 14px;
-    border-radius: 3px;
-    border: 1px solid #4b5563;
-    background-color: #111827;
-}
+        QCheckBox::indicator {
+        width: 14px;
+        height: 14px;
+        border-radius: 3px;
+        border: 1px solid #4b5563;
+        background-color: #111827;
+        }
 
-QCheckBox::indicator:checked {
-    background-color: #2b6cb0;
-    border: 1px solid #2b6cb0;
-}
+        QCheckBox::indicator:checked {
+        background-color: #2b6cb0;
+        border: 1px solid #2b6cb0;
+       
 
-/* ===== INPUT FIELDS ===== */
-QSpinBox, QComboBox {
-    background-color: #111827;
-    color: #f8fafc;
-    border: 1px solid #374151;
-    border-radius: 6px;
-    padding: 4px 6px;
-    min-height: 24px;
-}
+       /* ===== INPUT FIELDS ===== */
+       QSpinBox, QComboBox {
+       background-color: #111827;
+       color: #f8fafc;
+       border: 1px solid #374151;
+       border-radius: 6px;
+       padding: 4px 6px;
+       min-height: 24px;
+       }
 
-/* Focus visibility */
-QSpinBox:focus, QComboBox:focus {
-    border: 2px solid #2b6cb0;
-}
+       /* Focus visibility */
+       QSpinBox:focus, QComboBox:focus {
+       border: 2px solid #2b6cb0;
+       }
 
-/* Buttons inside spinbox / dropdown */
-QSpinBox::up-button, QSpinBox::down-button,
-QComboBox::drop-down {
-    background-color: #1f2937;
-    border: none;
-}
+       /* Buttons inside spinbox / dropdown */
+       QSpinBox::up-button, QSpinBox::down-button,
+       QComboBox::drop-down {
+       background-color: #1f2937;
+       border: none;
+       }
 
-/* Dropdown menu */
-QComboBox QAbstractItemView {
-    background-color: #111827;
-    color: #f8fafc;
-    selection-background-color: #2b6cb0;
-    selection-color: white;
-    border: 1px solid #374151;
-}
+       /* Dropdown menu */
+       Q.ComboBox QAbstractItemView {
+       background-color: #111827;
+       color: #f8fafc;
+       selection-background-color: #2b6cb0;
+       selection-color: white;
+       border: 1px solid #374151;
+       }
 
-/* Disabled state */
-QSpinBox:disabled, QComboBox:disabled {
-    background-color: #0f172a;
-    color: #6b7280;
-}
-""")
+       /* Disabled state */
+       QSpinBox:disabled, QComboBox:disabled {
+       background-color: #0f172a;
+       color: #6b7280;
+       }
+      """)
+
         controls_group_layout = QVBoxLayout(controls_group)
 
         form_layout = QFormLayout()
@@ -211,7 +216,8 @@ QSpinBox:disabled, QComboBox:disabled {
         self.start_value_spin = QSpinBox()
         self.start_value_spin.setRange(1, 10**9)
         self.start_value_spin.setValue(27)
-        self.start_value_spin.setToolTip("Initial value for the accelerated Collatz orbit")
+        self.start_value_spin.setToolTip(
+            "Initial value for the accelerated Collatz orbit")
         form_layout.addRow("Initial value", self.start_value_spin)
 
         self.max_steps_spin = QSpinBox()
@@ -291,21 +297,26 @@ QSpinBox:disabled, QComboBox:disabled {
         block_length = self.block_length_spin.value()
 
         values, parities = collatz_accelerated(n, max_steps=max_steps)
-        self._draw_dashboard(values, parities, window=window, block_length=block_length)
-        self._update_summary(n, values, parities, window=window, block_length=block_length)
+        self._draw_dashboard(values, parities, window=window,
+                             block_length=block_length)
+        self._update_summary(n, values, parities,
+                             window=window, block_length=block_length)
 
     def _selected_panels(self):
         return [name for name, checkbox in self.panel_checkboxes.items() if checkbox.isChecked()]
 
     def _draw_transition_heatmap(self, ax, parities, block_length=4):
         if len(parities) < block_length + 1:
-            ax.text(0.5, 0.5, "Not enough parity steps for transitions", ha="center", va="center")
+            ax.text(0.5, 0.5, "Not enough parity steps for transitions",
+                    ha="center", va="center")
             ax.set_title(f"Parity block transitions (length {block_length})")
             return
 
-        blocks = ["".join(str(b) for b in parities[i : i + block_length]) for i in range(len(parities) - block_length + 1)]
+        blocks = ["".join(str(b) for b in parities[i: i + block_length])
+                  for i in range(len(parities) - block_length + 1)]
         transitions = Counter(zip(blocks[:-1], blocks[1:]))
-        labels = [format(i, f"0{block_length}b") for i in range(2**block_length)]
+        labels = [format(i, f"0{block_length}b")
+                  for i in range(2**block_length)]
         index = {label: i for i, label in enumerate(labels)}
 
         matrix = np.zeros((len(labels), len(labels)), dtype=int)
@@ -332,22 +343,27 @@ QSpinBox:disabled, QComboBox:disabled {
 
         if not selected_panels:
             ax = self.figure.add_subplot(111)
-            ax.text(0.5, 0.5, "Select at least one panel to display", ha="center", va="center")
+            ax.text(0.5, 0.5, "Select at least one panel to display",
+                    ha="center", va="center")
             ax.set_axis_off()
-            self.figure.subplots_adjust(left=0.08, right=0.97, top=0.96, bottom=0.06)
+            self.figure.subplots_adjust(
+                left=0.08, right=0.97, top=0.96, bottom=0.06)
             self.canvas.draw_idle()
             return
 
         gs = self.figure.add_gridspec(len(selected_panels), 1, hspace=0.34)
-        panel_heights = {"orbit": 2.2, "density": 1.0, "blocks": 1.0, "transition": 1.2}
+        panel_heights = {"orbit": 2.2, "density": 1.0,
+                         "blocks": 1.0, "transition": 1.2}
         heights = [panel_heights.get(panel, 1.0) for panel in selected_panels]
-        gs = self.figure.add_gridspec(len(selected_panels), 1, height_ratios=heights, hspace=0.34)
+        gs = self.figure.add_gridspec(
+            len(selected_panels), 1, height_ratios=heights, hspace=0.34)
 
         for index, panel in enumerate(selected_panels):
             ax = self.figure.add_subplot(gs[index])
             ax.set_facecolor("#efefef")
             if panel == "orbit":
-                ax.plot(range(len(values)), values, marker="o", markersize=4.5, linewidth=2.2, color="#1f77b4", label="Orbit")
+                ax.plot(range(len(values)), values, marker="o", markersize=4.5,
+                        linewidth=2.2, color="#1f77b4", label="Orbit")
                 ax.set_title("Accelerated orbit and parity shadow")
                 ax.set_xlabel("Accelerated step")
                 ax.set_ylabel("Value")
@@ -355,7 +371,8 @@ QSpinBox:disabled, QComboBox:disabled {
                 ax.tick_params(axis="both", which="major", length=4, width=0.8)
 
                 ax2 = ax.twinx()
-                ax2.step(range(len(parities)), parities, where="mid", color="#d62728", linewidth=1.8, alpha=0.9)
+                ax2.step(range(len(parities)), parities, where="mid",
+                         color="#d62728", linewidth=1.8, alpha=0.9)
                 ax2.set_ylim(-0.1, 1.1)
                 ax2.set_yticks([0, 1])
                 ax2.set_yticklabels(["even", "odd"])
@@ -365,12 +382,14 @@ QSpinBox:disabled, QComboBox:disabled {
                     positions = []
                     density = []
                     for i in range(len(parities) - window + 1):
-                        density.append(np.mean(parities[i : i + window]))
+                        density.append(np.mean(parities[i: i + window]))
                         positions.append(i + window / 2)
                     ax.plot(positions, density, linewidth=2.2, color="#ff7f0e")
-                    ax.fill_between(positions, density, 0, color="#ff7f0e", alpha=0.16)
+                    ax.fill_between(positions, density, 0,
+                                    color="#ff7f0e", alpha=0.16)
                 else:
-                    ax.text(0.5, 0.5, "Window too large for the available parities", ha="center", va="center", color="#666666")
+                    ax.text(0.5, 0.5, "Window too large for the available parities",
+                            ha="center", va="center", color="#666666")
                 ax.set_ylim(0, 1)
                 ax.set_xlabel("Accelerated step")
                 ax.set_ylabel("Odd-step density")
@@ -378,11 +397,14 @@ QSpinBox:disabled, QComboBox:disabled {
                 ax.grid(alpha=0.25, linewidth=0.8)
                 ax.tick_params(axis="both", which="major", length=4, width=0.8)
             elif panel == "blocks":
-                blocks = ["".join(str(b) for b in parities[i : i + block_length]) for i in range(len(parities) - block_length + 1)]
+                blocks = ["".join(str(b) for b in parities[i: i + block_length])
+                          for i in range(len(parities) - block_length + 1)]
                 counts = Counter(blocks)
-                labels = [format(i, f"0{block_length}b") for i in range(2**block_length)]
+                labels = [format(i, f"0{block_length}b")
+                          for i in range(2**block_length)]
                 frequencies = [counts.get(label, 0) for label in labels]
-                ax.bar(labels, frequencies, color="#2ca02c", alpha=0.9, edgecolor="#1f7f1f", linewidth=0.8)
+                ax.bar(labels, frequencies, color="#2ca02c",
+                       alpha=0.9, edgecolor="#1f7f1f", linewidth=0.8)
                 ax.set_xlabel(f"Parity block (length {block_length})")
                 ax.set_ylabel("Occurrences")
                 ax.set_title("Recurrence of parity blocks")
@@ -392,9 +414,11 @@ QSpinBox:disabled, QComboBox:disabled {
                     label.set_rotation(45)
                     label.set_ha("right")
             elif panel == "transition":
-                self._draw_transition_heatmap(ax, parities, block_length=block_length)
+                self._draw_transition_heatmap(
+                    ax, parities, block_length=block_length)
 
-        self.figure.subplots_adjust(left=0.08, right=0.97, top=0.96, bottom=0.06, hspace=0.34)
+        self.figure.subplots_adjust(
+            left=0.08, right=0.97, top=0.96, bottom=0.06, hspace=0.34)
         self.canvas.draw_idle()
 
     def _update_summary(self, n, values, parities, window=10, block_length=4):
@@ -402,8 +426,10 @@ QSpinBox:disabled, QComboBox:disabled {
         odd_count = sum(parities)
         even_count = len(parities) - odd_count
         if len(parities) >= block_length:
-            blocks = [shadow_word[i : i + block_length] for i in range(len(shadow_word) - block_length + 1)]
-            most_common_block = Counter(blocks).most_common(1)[0] if blocks else ("", 0)
+            blocks = [shadow_word[i: i + block_length]
+                      for i in range(len(shadow_word) - block_length + 1)]
+            most_common_block = Counter(blocks).most_common(1)[
+                0] if blocks else ("", 0)
             block_summary = f"Most common block: {most_common_block[0]} ({most_common_block[1]} occurrences)"
         else:
             block_summary = "Most common block: n/a"
@@ -420,7 +446,8 @@ QSpinBox:disabled, QComboBox:disabled {
     def save_current_figure(self):
         out_dir = os.path.join(os.path.dirname(__file__), "shadow_figures")
         os.makedirs(out_dir, exist_ok=True)
-        out_path = os.path.join(out_dir, f"collatz_shadow_{self.start_value_spin.value()}_{self.max_steps_spin.value()}.png")
+        out_path = os.path.join(
+            out_dir, f"collatz_shadow_{self.start_value_spin.value()}_{self.max_steps_spin.value()}.png")
         self.figure.savefig(out_path, dpi=220, bbox_inches="tight")
         QMessageBox.information(self, "Saved", f"Figure saved to {out_path}")
 

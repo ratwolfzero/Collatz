@@ -1,27 +1,3 @@
-import os
-import sys
-from collections import Counter
-
-import matplotlib
-matplotlib.use("QtAgg")
-import matplotlib.pyplot as plt
-import numpy as np
-from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg, NavigationToolbar2QT
-from matplotlib.figure import Figure
-
-plt.rcParams.update(
-    {
-        "axes.titlesize": 12,
-        "axes.labelsize": 10,
-        "axes.titleweight": "bold",
-        "axes.labelweight": "bold",
-        "xtick.labelsize": 9,
-        "ytick.labelsize": 9,
-        "legend.fontsize": 9,
-        "font.family": "DejaVu Sans",
-    }
-)
-from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import (
     QApplication,
     QComboBox,
@@ -35,6 +11,30 @@ from PyQt6.QtWidgets import (
     QSpinBox,
     QVBoxLayout,
     QWidget,
+)
+from PyQt6.QtCore import Qt
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg, NavigationToolbar2QT
+import numpy as np
+import matplotlib.pyplot as plt
+import os
+import sys
+from collections import Counter
+
+import matplotlib
+matplotlib.use("QtAgg")
+
+plt.rcParams.update(
+    {
+        "axes.titlesize": 12,
+        "axes.labelsize": 10,
+        "axes.titleweight": "bold",
+        "axes.labelweight": "bold",
+        "xtick.labelsize": 9,
+        "ytick.labelsize": 9,
+        "legend.fontsize": 9,
+        "font.family": "DejaVu Sans",
+    }
 )
 
 
@@ -80,6 +80,7 @@ class CollatzShadowExplorer(QMainWindow):
         main_layout.setSpacing(14)
 
         controls_group = QGroupBox("Interactive controls")
+        
         controls_group.setStyleSheet("""
 QGroupBox {
     font-weight: 600;
@@ -164,7 +165,8 @@ QSpinBox:disabled, QComboBox:disabled {
         self.start_value_spin = QSpinBox()
         self.start_value_spin.setRange(1, 10**9)
         self.start_value_spin.setValue(27)
-        self.start_value_spin.setToolTip("Initial value for the accelerated Collatz orbit")
+        self.start_value_spin.setToolTip(
+            "Initial value for the accelerated Collatz orbit")
         form_layout.addRow("Initial value", self.start_value_spin)
 
         self.max_steps_spin = QSpinBox()
@@ -213,7 +215,8 @@ QSpinBox:disabled, QComboBox:disabled {
 
         self.summary_label = QLabel()
         self.summary_label.setWordWrap(True)
-        self.summary_label.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignTop)
+        self.summary_label.setAlignment(
+            Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignTop)
         self.summary_label.setMinimumHeight(88)
         self.summary_label.setStyleSheet(
             "background-color: #f4f8fc; border: 1px solid #b9c5d4; border-radius: 10px; padding: 10px; color: #1f3044;"
@@ -243,17 +246,21 @@ QSpinBox:disabled, QComboBox:disabled {
         block_length = self.block_length_spin.value()
 
         values, parities = collatz_accelerated(n, max_steps=max_steps)
-        self._draw_dashboard(values, parities, window=window, block_length=block_length)
-        self._update_summary(n, values, parities, window=window, block_length=block_length)
+        self._draw_dashboard(values, parities, window=window,
+                             block_length=block_length)
+        self._update_summary(n, values, parities,
+                             window=window, block_length=block_length)
 
     def _draw_dashboard(self, values, parities, window=10, block_length=4):
         self.figure.clear()
         self.figure.set_facecolor("white")
-        gs = self.figure.add_gridspec(3, 1, height_ratios=[2.3, 1.0, 1.2], hspace=0.32)
+        gs = self.figure.add_gridspec(
+            3, 1, height_ratios=[2.3, 1.0, 1.2], hspace=0.32)
 
         ax1 = self.figure.add_subplot(gs[0])
         ax1.set_facecolor("#fcfdff")
-        ax1.plot(range(len(values)), values, marker="o", markersize=4.5, linewidth=2.2, color="#1f77b4", label="Orbit")
+        ax1.plot(range(len(values)), values, marker="o", markersize=4.5,
+                 linewidth=2.2, color="#1f77b4", label="Orbit")
         ax1.set_title("Accelerated orbit and parity shadow")
         ax1.set_xlabel("Accelerated step")
         ax1.set_ylabel("Value")
@@ -261,7 +268,8 @@ QSpinBox:disabled, QComboBox:disabled {
         ax1.tick_params(axis="both", which="major", length=4, width=0.8)
 
         ax2 = ax1.twinx()
-        ax2.step(range(len(parities)), parities, where="mid", color="#d62728", linewidth=1.8, alpha=0.9)
+        ax2.step(range(len(parities)), parities, where="mid",
+                 color="#d62728", linewidth=1.8, alpha=0.9)
         ax2.set_ylim(-0.1, 1.1)
         ax2.set_yticks([0, 1])
         ax2.set_yticklabels(["even", "odd"])
@@ -274,12 +282,14 @@ QSpinBox:disabled, QComboBox:disabled {
             positions = []
             density = []
             for i in range(len(parities) - window + 1):
-                density.append(np.mean(parities[i : i + window]))
+                density.append(np.mean(parities[i: i + window]))
                 positions.append(i + window / 2)
             ax3.plot(positions, density, linewidth=2.2, color="#ff7f0e")
-            ax3.fill_between(positions, density, 0, color="#ff7f0e", alpha=0.16)
+            ax3.fill_between(positions, density, 0,
+                             color="#ff7f0e", alpha=0.16)
         else:
-            ax3.text(0.5, 0.5, "Window too large for the available parities", ha="center", va="center", color="#666666")
+            ax3.text(0.5, 0.5, "Window too large for the available parities",
+                     ha="center", va="center", color="#666666")
         ax3.set_ylim(0, 1)
         ax3.set_xlabel("Accelerated step")
         ax3.set_ylabel("Odd-step density")
@@ -289,11 +299,14 @@ QSpinBox:disabled, QComboBox:disabled {
 
         ax4 = self.figure.add_subplot(gs[2])
         ax4.set_facecolor("#fcfdff")
-        blocks = ["".join(str(b) for b in parities[i : i + block_length]) for i in range(len(parities) - block_length + 1)]
+        blocks = ["".join(str(b) for b in parities[i: i + block_length])
+                  for i in range(len(parities) - block_length + 1)]
         counts = Counter(blocks)
-        labels = [format(i, f"0{block_length}b") for i in range(2**block_length)]
+        labels = [format(i, f"0{block_length}b")
+                  for i in range(2**block_length)]
         frequencies = [counts.get(label, 0) for label in labels]
-        ax4.bar(labels, frequencies, color="#2ca02c", alpha=0.9, edgecolor="#1f7f1f", linewidth=0.8)
+        ax4.bar(labels, frequencies, color="#2ca02c",
+                alpha=0.9, edgecolor="#1f7f1f", linewidth=0.8)
         ax4.set_xlabel(f"Parity block (length {block_length})")
         ax4.set_ylabel("Occurrences")
         ax4.set_title("Recurrence of parity blocks")
@@ -303,7 +316,8 @@ QSpinBox:disabled, QComboBox:disabled {
             label.set_ha("right")
         ax4.tick_params(axis="both", which="major", length=4, width=0.8)
 
-        self.figure.subplots_adjust(left=0.08, right=0.95, top=0.95, bottom=0.08, hspace=0.36)
+        self.figure.subplots_adjust(
+            left=0.08, right=0.95, top=0.95, bottom=0.08, hspace=0.36)
         self.canvas.draw_idle()
 
     def _update_summary(self, n, values, parities, window=10, block_length=4):
@@ -311,8 +325,10 @@ QSpinBox:disabled, QComboBox:disabled {
         odd_count = sum(parities)
         even_count = len(parities) - odd_count
         if len(parities) >= block_length:
-            blocks = [shadow_word[i : i + block_length] for i in range(len(shadow_word) - block_length + 1)]
-            most_common_block = Counter(blocks).most_common(1)[0] if blocks else ("", 0)
+            blocks = [shadow_word[i: i + block_length]
+                      for i in range(len(shadow_word) - block_length + 1)]
+            most_common_block = Counter(blocks).most_common(1)[
+                0] if blocks else ("", 0)
             block_summary = f"Most common block: {most_common_block[0]} ({most_common_block[1]} occurrences)"
         else:
             block_summary = "Most common block: n/a"
@@ -329,7 +345,8 @@ QSpinBox:disabled, QComboBox:disabled {
     def save_current_figure(self):
         out_dir = os.path.join(os.path.dirname(__file__), "shadow_figures")
         os.makedirs(out_dir, exist_ok=True)
-        out_path = os.path.join(out_dir, f"collatz_shadow_{self.start_value_spin.value()}_{self.max_steps_spin.value()}.png")
+        out_path = os.path.join(
+            out_dir, f"collatz_shadow_{self.start_value_spin.value()}_{self.max_steps_spin.value()}.png")
         self.figure.savefig(out_path, dpi=220, bbox_inches="tight")
         QMessageBox.information(self, "Saved", f"Figure saved to {out_path}")
 
