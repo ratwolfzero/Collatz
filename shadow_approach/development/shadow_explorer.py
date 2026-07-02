@@ -8,6 +8,19 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg, NavigationToolbar2QT
 from matplotlib.figure import Figure
+
+plt.rcParams.update(
+    {
+        "axes.titlesize": 12,
+        "axes.labelsize": 10,
+        "axes.titleweight": "bold",
+        "axes.labelweight": "bold",
+        "xtick.labelsize": 9,
+        "ytick.labelsize": 9,
+        "legend.fontsize": 9,
+        "font.family": "DejaVu Sans",
+    }
+)
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import (
     QApplication,
@@ -48,11 +61,13 @@ class CollatzShadowExplorer(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Collatz Shadow Research Explorer")
-        self.resize(1280, 840)
+        self.resize(1380, 920)
 
-        self.figure = Figure(figsize=(11, 7), dpi=120)
+        self.figure = Figure(figsize=(13, 8), dpi=120, facecolor="#eeeeee")
         self.canvas = FigureCanvasQTAgg(self.figure)
+        self.canvas.setMinimumHeight(520)
         self.toolbar = NavigationToolbar2QT(self.canvas, self)
+        self.toolbar.setStyleSheet("QToolBar { spacing: 4px; }")
 
         self._build_ui()
         self.refresh_plot()
@@ -61,8 +76,9 @@ class CollatzShadowExplorer(QMainWindow):
         central = QWidget(self)
         self.setCentralWidget(central)
 
+        central.setStyleSheet("background-color: #e7e7e7; QCheckBox { color: #18324a; font-weight: 500; }")
         main_layout = QHBoxLayout(central)
-        main_layout.setContentsMargins(16, 16, 16, 16)
+        main_layout.setContentsMargins(18, 18, 18, 18)
         main_layout.setSpacing(16)
 
         plot_container = QWidget(self)
@@ -72,10 +88,18 @@ class CollatzShadowExplorer(QMainWindow):
 
         self.summary_label = QLabel()
         self.summary_label.setWordWrap(True)
-        self.summary_label.setStyleSheet("background: #f8f9fa; padding: 8px; border-radius: 4px;")
+        self.summary_label.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignTop)
+        self.summary_label.setMinimumHeight(88)
+        self.summary_label.setStyleSheet(
+            "background-color: #f2f2f2; border: 1px solid #c2c2c2; border-radius: 10px; padding: 10px; color: #1f3044;"
+        )
         plot_layout.addWidget(self.summary_label)
 
         plot_box = QGroupBox("Shadow sequence view")
+        plot_box.setStyleSheet(
+            "QGroupBox { font-weight: 600; background-color: #f2f2f2; color: #18324a; border: 1px solid #c2c2c2; border-radius: 10px; margin-top: 8px; padding-top: 8px; }"
+            "QGroupBox::title { subcontrol-origin: margin; left: 10px; padding: 0 6px; }"
+        )
         plot_box_layout = QVBoxLayout(plot_box)
         plot_box_layout.setContentsMargins(8, 8, 8, 8)
         plot_box_layout.setSpacing(4)
@@ -87,6 +111,7 @@ class CollatzShadowExplorer(QMainWindow):
         controls_scroll.setWidgetResizable(True)
         controls_scroll.setMinimumWidth(320)
         controls_scroll.setMaximumWidth(360)
+        controls_scroll.setStyleSheet("QScrollArea { background: transparent; border: none; }")
 
         controls_widget = QWidget(self)
         controls_layout = QVBoxLayout(controls_widget)
@@ -94,10 +119,20 @@ class CollatzShadowExplorer(QMainWindow):
         controls_layout.setSpacing(12)
 
         controls_group = QGroupBox("Interactive controls")
+        controls_group.setStyleSheet(
+            "QGroupBox { font-weight: 600; background-color: #1a1a1a; color: #f5f5f5; border: 1px solid #3a3a3a; border-radius: 10px; margin-top: 8px; padding-top: 8px; }"
+            "QGroupBox::title { subcontrol-origin: margin; left: 10px; padding: 0 6px; }"
+            "QLabel { color: #f5f5f5; }"
+            "QCheckBox { color: #f5f5f5; }"
+            "QSpinBox, QComboBox { background-color: #232323; color: #f5f5f5; border: 1px solid #4b4b4b; border-radius: 5px; padding: 4px 6px; min-height: 22px; }"
+            "QSpinBox::up-button, QSpinBox::down-button, QComboBox::drop-down { background-color: #2d2d2d; border: 1px solid #4b4b4b; }"
+            "QComboBox QAbstractItemView { background-color: #232323; color: #f5f5f5; selection-background-color: #3a3a3a; selection-color: #ffffff; }"
+        )
         controls_group_layout = QVBoxLayout(controls_group)
 
         form_layout = QFormLayout()
         form_layout.setLabelAlignment(Qt.AlignmentFlag.AlignRight)
+        form_layout.setVerticalSpacing(8)
 
         self.start_value_spin = QSpinBox()
         self.start_value_spin.setRange(1, 10**9)
@@ -129,6 +164,11 @@ class CollatzShadowExplorer(QMainWindow):
         controls_group_layout.addLayout(form_layout)
 
         panel_group = QGroupBox("Visible panels")
+        panel_group.setStyleSheet(
+            "QGroupBox { font-weight: 600; background-color: #1a1a1a; color: #f5f5f5; border: 1px solid #3a3a3a; border-radius: 8px; margin-top: 8px; padding-top: 8px; }"
+            "QGroupBox::title { subcontrol-origin: margin; left: 10px; padding: 0 6px; }"
+            "QCheckBox { color: #f5f5f5; }"
+        )
         panel_layout = QVBoxLayout(panel_group)
         self.panel_checkboxes = {
             "orbit": QCheckBox("Orbit + shadow", checked=True),
@@ -142,10 +182,18 @@ class CollatzShadowExplorer(QMainWindow):
 
         button_row = QHBoxLayout()
         generate_button = QPushButton("Generate analysis")
+        generate_button.setStyleSheet(
+            "QPushButton { background-color: #2b6cb0; color: white; border: none; border-radius: 6px; padding: 7px 12px; font-weight: 600; }"
+            "QPushButton:hover { background-color: #225a93; }"
+        )
         generate_button.clicked.connect(self.refresh_plot)
         button_row.addWidget(generate_button)
 
         save_button = QPushButton("Save figure")
+        save_button.setStyleSheet(
+            "QPushButton { background-color: #4a5568; color: white; border: none; border-radius: 6px; padding: 7px 12px; font-weight: 600; }"
+            "QPushButton:hover { background-color: #364151; }"
+        )
         save_button.clicked.connect(self.save_current_figure)
         button_row.addWidget(save_button)
         button_row.addStretch()
@@ -191,6 +239,7 @@ class CollatzShadowExplorer(QMainWindow):
             if src in index and dst in index:
                 matrix[index[src], index[dst]] = count
 
+        ax.set_facecolor("#efefef")
         image = ax.imshow(matrix, cmap="viridis", aspect="auto")
         ax.set_title(f"Parity block transitions (length {block_length})")
         ax.set_xlabel("Next block")
@@ -222,15 +271,17 @@ class CollatzShadowExplorer(QMainWindow):
 
         for index, panel in enumerate(selected_panels):
             ax = self.figure.add_subplot(gs[index])
+            ax.set_facecolor("#efefef")
             if panel == "orbit":
-                ax.plot(range(len(values)), values, marker="o", linewidth=2.0, color="#1f77b4", label="Orbit")
+                ax.plot(range(len(values)), values, marker="o", markersize=4.5, linewidth=2.2, color="#1f77b4", label="Orbit")
                 ax.set_title("Accelerated orbit and parity shadow")
                 ax.set_xlabel("Accelerated step")
                 ax.set_ylabel("Value")
-                ax.grid(alpha=0.3)
+                ax.grid(alpha=0.25, linewidth=0.8)
+                ax.tick_params(axis="both", which="major", length=4, width=0.8)
 
                 ax2 = ax.twinx()
-                ax2.step(range(len(parities)), parities, where="mid", color="#d62728", linewidth=1.6, alpha=0.85)
+                ax2.step(range(len(parities)), parities, where="mid", color="#d62728", linewidth=1.8, alpha=0.9)
                 ax2.set_ylim(-0.1, 1.1)
                 ax2.set_yticks([0, 1])
                 ax2.set_yticklabels(["even", "odd"])
@@ -242,24 +293,27 @@ class CollatzShadowExplorer(QMainWindow):
                     for i in range(len(parities) - window + 1):
                         density.append(np.mean(parities[i : i + window]))
                         positions.append(i + window / 2)
-                    ax.plot(positions, density, linewidth=2.0, color="#ff7f0e")
+                    ax.plot(positions, density, linewidth=2.2, color="#ff7f0e")
+                    ax.fill_between(positions, density, 0, color="#ff7f0e", alpha=0.16)
                 else:
-                    ax.text(0.5, 0.5, "Window too large for the available parities", ha="center", va="center")
+                    ax.text(0.5, 0.5, "Window too large for the available parities", ha="center", va="center", color="#666666")
                 ax.set_ylim(0, 1)
                 ax.set_xlabel("Accelerated step")
                 ax.set_ylabel("Odd-step density")
                 ax.set_title(f"Rolling parity density (window = {window})")
-                ax.grid(alpha=0.3)
+                ax.grid(alpha=0.25, linewidth=0.8)
+                ax.tick_params(axis="both", which="major", length=4, width=0.8)
             elif panel == "blocks":
                 blocks = ["".join(str(b) for b in parities[i : i + block_length]) for i in range(len(parities) - block_length + 1)]
                 counts = Counter(blocks)
                 labels = [format(i, f"0{block_length}b") for i in range(2**block_length)]
                 frequencies = [counts.get(label, 0) for label in labels]
-                ax.bar(labels, frequencies, color="#2ca02c", alpha=0.9)
+                ax.bar(labels, frequencies, color="#2ca02c", alpha=0.9, edgecolor="#1f7f1f", linewidth=0.8)
                 ax.set_xlabel(f"Parity block (length {block_length})")
                 ax.set_ylabel("Occurrences")
                 ax.set_title("Recurrence of parity blocks")
-                ax.grid(axis="y", alpha=0.3)
+                ax.grid(axis="y", alpha=0.25, linewidth=0.8)
+                ax.tick_params(axis="both", which="major", length=4, width=0.8)
                 for label in ax.get_xticklabels():
                     label.set_rotation(45)
                     label.set_ha("right")
