@@ -76,7 +76,11 @@ class CollatzShadowExplorer(QMainWindow):
         central = QWidget(self)
         self.setCentralWidget(central)
 
-        central.setStyleSheet("background-color: #e7e7e7; QCheckBox { color: #18324a; font-weight: 500; }")
+        central.setStyleSheet(
+            "background-color: #e7e7e7;"
+            "QLabel { color: #1f3044; }"
+            "QCheckBox { color: #18324a; font-weight: 500; }"
+        )
         main_layout = QHBoxLayout(central)
         main_layout.setContentsMargins(18, 18, 18, 18)
         main_layout.setSpacing(16)
@@ -120,13 +124,12 @@ class CollatzShadowExplorer(QMainWindow):
 
         controls_group = QGroupBox("Interactive controls")
         controls_group.setStyleSheet(
-            "QGroupBox { font-weight: 600; background-color: #1a1a1a; color: #f5f5f5; border: 1px solid #3a3a3a; border-radius: 10px; margin-top: 8px; padding-top: 8px; }"
-            "QGroupBox::title { subcontrol-origin: margin; left: 10px; padding: 0 6px; }"
-            "QLabel { color: #f5f5f5; }"
-            "QCheckBox { color: #f5f5f5; }"
-            "QSpinBox, QComboBox { background-color: #232323; color: #f5f5f5; border: 1px solid #4b4b4b; border-radius: 5px; padding: 4px 6px; min-height: 22px; }"
+            "QGroupBox { font-weight: 600; background-color: #1a1a1a; color: #f8fafc; border: 1px solid #3a3a3a; border-radius: 10px; margin-top: 8px; padding-top: 8px; }"
+            "QGroupBox::title { subcontrol-origin: margin; left: 10px; padding: 0 6px; color: #f8fafc; }"
+            "QLabel, QCheckBox { color: #f8fafc; font-weight: 500; }"
+            "QSpinBox, QComboBox { background-color: #232323; color: #f8fafc; border: 1px solid #4b4b4b; border-radius: 5px; padding: 4px 6px; min-height: 22px; }"
             "QSpinBox::up-button, QSpinBox::down-button, QComboBox::drop-down { background-color: #2d2d2d; border: 1px solid #4b4b4b; }"
-            "QComboBox QAbstractItemView { background-color: #232323; color: #f5f5f5; selection-background-color: #3a3a3a; selection-color: #ffffff; }"
+            "QComboBox QAbstractItemView { background-color: #232323; color: #f8fafc; selection-background-color: #3a3a3a; selection-color: #ffffff; }"
         )
         controls_group_layout = QVBoxLayout(controls_group)
 
@@ -165,9 +168,9 @@ class CollatzShadowExplorer(QMainWindow):
 
         panel_group = QGroupBox("Visible panels")
         panel_group.setStyleSheet(
-            "QGroupBox { font-weight: 600; background-color: #1a1a1a; color: #f5f5f5; border: 1px solid #3a3a3a; border-radius: 8px; margin-top: 8px; padding-top: 8px; }"
-            "QGroupBox::title { subcontrol-origin: margin; left: 10px; padding: 0 6px; }"
-            "QCheckBox { color: #f5f5f5; }"
+            "QGroupBox { font-weight: 600; background-color: #1a1a1a; color: #f8fafc; border: 1px solid #3a3a3a; border-radius: 8px; margin-top: 8px; padding-top: 8px; }"
+            "QGroupBox::title { subcontrol-origin: margin; left: 10px; padding: 0 6px; color: #f8fafc; }"
+            "QCheckBox { color: #f8fafc; font-weight: 500; }"
         )
         panel_layout = QVBoxLayout(panel_group)
         self.panel_checkboxes = {
