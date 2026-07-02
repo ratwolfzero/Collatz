@@ -11,10 +11,18 @@ If one records the orbit as a sequence of even/odd decisions, the resulting bina
 
 This is a genuine simplification of the picture, but it is a simplification of the representation, not a solution of the problem.
 
+## The Accelerated Collatz Formulation
+
+This perspective uses the *accelerated* (or shortcut) Collatz map rather than the classical 3n+1 rule. In the accelerated version:
+
+- If **n is even**: next = n / 2
+- If **n is odd**: next = (3n + 1) / 2
+
+By folding the immediate division by 2 after each 3n+1 step into a single operation, the accelerated map produces a shorter sequence in which every step corresponds directly to one bit in the parity word (0 = divide by 2, 1 = apply (3n+1)/2). For example, starting from 27 the classical orbit requires 111 steps, while the accelerated orbit reaches 1 in 71 steps. This formulation makes the parity shadow cleaner and more tightly coupled to the symbolic dynamics, while preserving the essential behavior of the original conjecture.
+
 ## What this perspective is
 
 This viewpoint is best understood as a reformulation.
-
 It highlights that:
 
 - the Collatz map can be studied through its parity pattern;
@@ -26,7 +34,6 @@ In this sense, the problem can be seen as a question about which binary sequence
 ## What this perspective is not
 
 It is important not to overstate what this does.
-
 It does not:
 
 - solve the Collatz conjecture;
