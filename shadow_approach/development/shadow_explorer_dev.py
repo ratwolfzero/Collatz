@@ -183,7 +183,7 @@ class CollatzShadowExplorer(QMainWindow):
         }
 
         # Loaded with the new ultimate 3-step visualization suite
-        defaults = ["orbit", "phasespace", "recurrence", "spectral_entropy"]
+        defaults = ["orbit", "phasespace", "heatmap", "spectral_entropy"]
         for key in defaults:
             if key in self.panel_checkboxes:
                 self.panel_checkboxes[key].setChecked(True)
