@@ -106,8 +106,9 @@ class CollatzShadowExplorer(QMainWindow):
             Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignTop)
         self.summary_label.setMinimumHeight(70)
         self.summary_label.setStyleSheet(
-            "QLabel { background-color: #1e1e1e; border: 1px solid #333333; border-radius: 6px; padding: 10px; font-family: monospace; }"
-        )
+        "QLabel { background-color: #1e1e1e; border: 1px solid #333333; border-radius: 6px; padding: 10px; "
+        "font-family: 'Menlo', 'Courier New', monospace; }"
+)
         layout.addWidget(self.summary_label)
 
         plot_box = QGroupBox("Dynamics Processing Matrix")
