@@ -15,6 +15,7 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QPalette, QColor, QFont, QFontDatabase
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg, NavigationToolbar2QT
 import numpy as np
@@ -28,8 +29,8 @@ matplotlib.use("QtAgg")
 
 plt.rcParams.update(
     {
-        "axes.titlesize": 12,
-        "axes.labelsize": 10,
+        "axes.titlesize": 10,
+        "axes.labelsize": 9,
         "axes.titleweight": "bold",
         "axes.labelweight": "bold",
         "xtick.labelsize": 9,
@@ -76,10 +77,11 @@ class CollatzShadowExplorer(QMainWindow):
         central = QWidget(self)
         self.setCentralWidget(central)
 
+        # Minimal dark background so the global palette handles most colors.
         central.setStyleSheet(
-            "background-color: #e7e7e7;"
-            "QLabel { color: #1f3044; }"
-            "QCheckBox { color: #18324a; font-weight: 500; }"
+            "background-color: #121212;"
+            "QLabel { color: #e6eef8; font-size: 14px; }"
+            "QCheckBox { color: #e6eef8; font-size: 14px; }"
         )
         main_layout = QHBoxLayout(central)
         main_layout.setContentsMargins(18, 18, 18, 18)
@@ -96,14 +98,14 @@ class CollatzShadowExplorer(QMainWindow):
             Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignTop)
         self.summary_label.setMinimumHeight(88)
         self.summary_label.setStyleSheet(
-            "background-color: #f2f2f2; border: 1px solid #c2c2c2; border-radius: 10px; padding: 10px; color: #1f3044;"
+            "background-color: #1e1e1e; border: 1px solid #333333; border-radius: 10px; padding: 8px; color: #e6eef8; font-size: 11px;"
         )
         plot_layout.addWidget(self.summary_label)
 
         plot_box = QGroupBox("Shadow sequence view")
         plot_box.setStyleSheet(
-            "QGroupBox { font-weight: 600; background-color: #f2f2f2; color: #18324a; border: 1px solid #c2c2c2; border-radius: 10px; margin-top: 8px; padding-top: 8px; }"
-            "QGroupBox::title { subcontrol-origin: margin; left: 10px; padding: 0 6px; }"
+            "QGroupBox { font-weight: 600; font-size: 11px; background-color: #1b1b1b; color: #e6eef8; border: 1px solid #333333; border-radius: 10px; margin-top: 8px; padding-top: 8px; }"
+            "QGroupBox::title { subcontrol-origin: margin; left: 10px; padding: 0 6px; font-size: 12px; }"
         )
         plot_box_layout = QVBoxLayout(plot_box)
         plot_box_layout.setContentsMargins(8, 8, 8, 8)
@@ -127,85 +129,16 @@ class CollatzShadowExplorer(QMainWindow):
 
         controls_group = QGroupBox("Interactive controls")
 
-        controls_group.setStyleSheet("""
-        QGroupBox {
-        font-weight: 600;
-        background-color: #1b1f24;
-        color: #f8fafc;
-        border: 1px solid #2d333b;
-        border-radius: 10px;
-        margin-top: 8px;
-        padding-top: 8px;
-        }
-
-        QGroupBox::title {
-        subcontrol-origin: margin;
-        left: 10px;
-        padding: 0 6px;
-        color: #f8fafc;
-        }
-
-        /* ===== TEXT ===== */
-        QLabel {
-        color: #e5e7eb;
-        }
-
-        /* ===== CHECKBOX FIX (IMPORTANT) ===== */
-        QCheckBox {
-        color: #e5e7eb;
-        spacing: 6px;
-        }
-
-        QCheckBox::indicator {
-        width: 14px;
-        height: 14px;
-        border-radius: 3px;
-        border: 1px solid #4b5563;
-        background-color: #111827;
-        }
-
-        QCheckBox::indicator:checked {
-        background-color: #2b6cb0;
-        border: 1px solid #2b6cb0;
-       
-
-       /* ===== INPUT FIELDS ===== */
-       QSpinBox, QComboBox {
-       background-color: #111827;
-       color: #f8fafc;
-       border: 1px solid #374151;
-       border-radius: 6px;
-       padding: 4px 6px;
-       min-height: 24px;
-       }
-
-       /* Focus visibility */
-       QSpinBox:focus, QComboBox:focus {
-       border: 2px solid #2b6cb0;
-       }
-
-       /* Buttons inside spinbox / dropdown */
-       QSpinBox::up-button, QSpinBox::down-button,
-       QComboBox::drop-down {
-       background-color: #1f2937;
-       border: none;
-       }
-
-       /* Dropdown menu */
-       Q.ComboBox QAbstractItemView {
-       background-color: #111827;
-       color: #f8fafc;
-       selection-background-color: #2b6cb0;
-       selection-color: white;
-       border: 1px solid #374151;
-       }
-
-       /* Disabled state */
-       QSpinBox:disabled, QComboBox:disabled {
-       background-color: #0f172a;
-       color: #6b7280;
-       }
-      """)
+        # Rely on a global QPalette-based dark theme; keep local stylesheet minimal
+        # to only adjust font sizes and borders for layout clarity.
+        controls_group.setStyleSheet(
+            "QGroupBox { font-weight: 600; font-size: 10px; "
+            "border: 1px solid #444444; border-radius: 8px; margin-top: 8px; padding-top: 8px; }"
+            "QGroupBox::title { subcontrol-origin: margin; left: 10px; padding: 0 6px; }"
+            "QLabel, QCheckBox { font-size: 10px; }"
+            "QSpinBox, QComboBox { font-size: 10px; }"
+            "QPushButton { font-size: 10px; padding: 6px 8px; }"
+        )
 
         controls_group_layout = QVBoxLayout(controls_group)
 
@@ -245,9 +178,9 @@ class CollatzShadowExplorer(QMainWindow):
 
         panel_group = QGroupBox("Visible panels")
         panel_group.setStyleSheet(
-            "QGroupBox { font-weight: 600; background-color: #1a1a1a; color: #f8fafc; border: 1px solid #3a3a3a; border-radius: 8px; margin-top: 8px; padding-top: 8px; }"
-            "QGroupBox::title { subcontrol-origin: margin; left: 10px; padding: 0 6px; color: #f8fafc; }"
-            "QCheckBox { color: #f8fafc; font-weight: 500; }"
+            "QGroupBox { font-weight: 600; font-size: 10px; background-color: #161616; color: #e6eef8; border: 1px solid #2f2f2f; border-radius: 8px; margin-top: 8px; padding-top: 8px; }"
+            "QGroupBox::title { subcontrol-origin: margin; left: 10px; padding: 0 6px; font-size: 11px; }"
+            "QCheckBox { color: #e6eef8; font-size: 10px; font-weight: 500; }"
         )
         panel_layout = QVBoxLayout(panel_group)
         self.panel_checkboxes = {
@@ -263,7 +196,7 @@ class CollatzShadowExplorer(QMainWindow):
         button_row = QHBoxLayout()
         generate_button = QPushButton("Generate analysis")
         generate_button.setStyleSheet(
-            "QPushButton { background-color: #2b6cb0; color: white; border: none; border-radius: 6px; padding: 7px 12px; font-weight: 600; }"
+            "QPushButton { background-color: #2b6cb0; color: white; border: none; border-radius: 6px; padding: 6px 10px; font-weight: 600; font-size: 11px; }"
             "QPushButton:hover { background-color: #225a93; }"
         )
         generate_button.clicked.connect(self.refresh_plot)
@@ -271,7 +204,7 @@ class CollatzShadowExplorer(QMainWindow):
 
         save_button = QPushButton("Save figure")
         save_button.setStyleSheet(
-            "QPushButton { background-color: #4a5568; color: white; border: none; border-radius: 6px; padding: 7px 12px; font-weight: 600; }"
+            "QPushButton { background-color: #4a5568; color: white; border: none; border-radius: 6px; padding: 6px 10px; font-weight: 600; font-size: 11px; }"
             "QPushButton:hover { background-color: #364151; }"
         )
         save_button.clicked.connect(self.save_current_figure)
@@ -454,6 +387,33 @@ class CollatzShadowExplorer(QMainWindow):
 
 def main():
     app = QApplication.instance() or QApplication(sys.argv)
+
+    # Apply a simple Fusion-based dark palette globally for consistent dark theme
+    try:
+        app.setStyle('Fusion')
+    except Exception:
+        pass
+
+    dark_palette = QPalette()
+    dark_palette.setColor(QPalette.ColorRole.Window, QColor(18, 18, 18))
+    dark_palette.setColor(QPalette.ColorRole.WindowText, QColor(230, 230, 230))
+    dark_palette.setColor(QPalette.ColorRole.Base, QColor(28, 28, 28))
+    dark_palette.setColor(QPalette.ColorRole.AlternateBase, QColor(38, 38, 38))
+    dark_palette.setColor(QPalette.ColorRole.ToolTipBase, QColor(230, 230, 230))
+    dark_palette.setColor(QPalette.ColorRole.ToolTipText, QColor(230, 230, 230))
+    dark_palette.setColor(QPalette.ColorRole.Text, QColor(230, 230, 230))
+    dark_palette.setColor(QPalette.ColorRole.Button, QColor(30, 30, 30))
+    dark_palette.setColor(QPalette.ColorRole.ButtonText, QColor(230, 230, 230))
+    dark_palette.setColor(QPalette.ColorRole.BrightText, QColor(255, 0, 0))
+    dark_palette.setColor(QPalette.ColorRole.Highlight, QColor(58, 123, 213))
+    dark_palette.setColor(QPalette.ColorRole.HighlightedText, QColor(255, 255, 255))
+    app.setPalette(dark_palette)
+
+    # Use a slightly smaller system application font so panels appear more compact
+    sys_font = QFontDatabase.systemFont(QFontDatabase.SystemFont.GeneralFont)
+    sys_font.setPointSize(10)
+    app.setFont(sys_font)
+
     window = CollatzShadowExplorer()
     window.show()
     return app.exec()
