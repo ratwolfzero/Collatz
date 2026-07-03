@@ -66,7 +66,7 @@ class CollatzShadowExplorer(QMainWindow):
 
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Collatz Shadow & Chaotic Dynamics Laboratory")
+        self.setWindowTitle("Collatz Symbolic Dynamics Laboratory")
         self.resize(1420, 950)
 
         # Core Matplotlib Setup
@@ -111,7 +111,7 @@ class CollatzShadowExplorer(QMainWindow):
         )
         layout.addWidget(self.summary_label)
 
-        plot_box = QGroupBox("Dynamics Processing Matrix")
+        plot_box = QGroupBox("Analysis Dashboard")
         plot_box_layout = QVBoxLayout(plot_box)
         plot_box_layout.setContentsMargins(8, 8, 8, 8)
 
@@ -140,7 +140,7 @@ class CollatzShadowExplorer(QMainWindow):
         self.start_value_spin = QSpinBox()
         self.start_value_spin.setRange(1, 10**9)
         self.start_value_spin.setValue(27)
-        form_layout.addRow("Initial Vlue:", self.start_value_spin)
+        form_layout.addRow("Initial Value:", self.start_value_spin)
 
         self.max_steps_spin = QSpinBox()
         self.max_steps_spin.setRange(10, 10000)
@@ -170,22 +170,22 @@ class CollatzShadowExplorer(QMainWindow):
 
         self.panel_checkboxes = {
             "orbit": QCheckBox("Orbit + Shadow Track"),
-            "phasespace": QCheckBox("Phase-Space Attractor (x_n vs x_n+1)"),
-            "recurrence": QCheckBox("Parity Recurrence Matrix (2D)"),
-            "spectral_entropy": QCheckBox("Rolling Spectral Entropy (Chaos Metric)"),
+            "phasespace": QCheckBox("Delay Embedding (x_n vs x_n+1)"),
+            "recurrence": QCheckBox("Parity Similarity Matrix (2D)"),
+            "spectral_entropy": QCheckBox("Rolling Spectral Entropy"),
             "density": QCheckBox("Rolling Parity Density"),
             "blocks": QCheckBox("Block Recurrence Metric"),
             "turtle": QCheckBox("2D Turtle Walk (Fractal)"),
             "entropy": QCheckBox("Shannon Block Entropy"),
-            "fft": QCheckBox("Fast Fourier Transform (FFT)"),
-            "network": QCheckBox("De Bruijn Network Map"),
+            "fft": QCheckBox("Power Spectrum (FFT)"),
+            "network": QCheckBox("Observed Block Transition Network"),
             "autocorr": QCheckBox("Autocorrelation Lag"),
             "heatmap": QCheckBox("Transition Matrix Heatmap"),
             "runlength": QCheckBox("Run-Length Histogram"),
             "walk": QCheckBox("Cumulative Parity Drift"),
         }
 
-        # Loaded with the new ultimate 3-step visualization suite
+        # Loaded with the default setup
         defaults = ["orbit", "phasespace", "heatmap", "spectral_entropy"]
         for key in defaults:
             if key in self.panel_checkboxes:
@@ -253,24 +253,22 @@ class CollatzShadowExplorer(QMainWindow):
 
     def _draw_phase_space(self, ax, values, parities):
         if len(values) < 2:
-            ax.text(0.5, 0.5, "Insufficient depth for attractor mapping.",
+            ax.text(0.5, 0.5, "Insufficient depth for mapping.",
                     ha="center", va="center", color="#888888")
             return
 
-        # Core engine trajectories mapped in 2D space
         x_coords = values[:-1]
         y_coords = values[1:]
 
         ax.plot(x_coords, y_coords, color="#4a5568",
                 linewidth=0.5, alpha=0.4, zorder=1)
-        # FIXED: Removed [:-1] slice from parities to match the exact size of x_coords and y_coords
         scatter = ax.scatter(x_coords, y_coords, c=parities,
                              cmap="coolwarm", s=10, alpha=0.75, zorder=2)
 
         ax.set_xscale("log")
         ax.set_yscale("log")
         ax.set_title(
-            "Phase-Space Embedding Attractor (x_n vs x_n+1)", color="#e0e0e0")
+            "Orbit Delay Embedding (x_n vs x_n+1)", color="#e0e0e0")
         ax.set_xlabel("State space x_n (Log)", color="#b0b0b0")
         ax.set_ylabel("State space x_n+1 (Log)", color="#b0b0b0")
 
@@ -286,7 +284,7 @@ class CollatzShadowExplorer(QMainWindow):
         ax.imshow(recurrence_matrix, cmap="binary",
                   origin="lower", interpolation="none", alpha=0.85)
         ax.set_title(
-            "Parity Recurrence State Matrix (2D Global Textures)", color="#e0e0e0")
+            "Parity Similarity Matrix (2D Global Textures)", color="#e0e0e0")
         ax.set_xlabel("Sequence Vector Time (i)", color="#b0b0b0")
         ax.set_ylabel("Sequence Vector Time (j)", color="#b0b0b0")
         ax.grid(False)
@@ -304,12 +302,15 @@ class CollatzShadowExplorer(QMainWindow):
             return
 
         # Map parities to balanced signal dynamics (-1, 1)
-        signal = np.array(parities) * 2 - 1
+        signal = np.array(parities, dtype=float) * 2 - 1
         se_values = []
         positions = []
 
         for i in range(len(signal) - window + 1):
             chunk = signal[i: i + window]
+            # Mean-center the chunk
+            chunk -= np.mean(chunk)
+            
             fft_vals = np.abs(np.fft.rfft(chunk))
             psd = fft_vals**2
             psd_sum = np.sum(psd)
@@ -321,7 +322,6 @@ class CollatzShadowExplorer(QMainWindow):
 
                 n_bins = len(fft_vals)
                 if n_bins > 1:
-                    # Enforce standard normalization limit [0, 1]
                     entropy /= np.log2(n_bins)
             else:
                 entropy = 0
@@ -333,8 +333,8 @@ class CollatzShadowExplorer(QMainWindow):
         ax.fill_between(positions, se_values, 0, color="#fc8181", alpha=0.15)
         ax.set_ylim(0, 1.05)
         ax.set_title(
-            f"Rolling Spectral Entropy Spectrum (Window: {window})", color="#e0e0e0")
-        ax.set_ylabel("Normalized Chaos Rank", color="#b0b0b0")
+            f"Rolling Spectral Entropy Estimate (Window: {window})", color="#e0e0e0")
+        ax.set_ylabel("Normalized Spectral Entropy", color="#b0b0b0")
 
     # =========================================================================
     # PORTED SUBPLOT VISUALIZATION SUITE
@@ -368,7 +368,7 @@ class CollatzShadowExplorer(QMainWindow):
         nx.draw_networkx_labels(
             G, pos, ax=ax, font_size=8, font_color="#f7fafc", font_weight="bold")
         ax.set_title(
-            f"Directed De Bruijn Network (Block Length: {block_length})", color="#e0e0e0")
+            f"Observed Block Transition Network (Block Length: {block_length})", color="#e0e0e0")
         ax.axis("off")
 
     def _draw_turtle_walk(self, ax, parities):
@@ -416,12 +416,17 @@ class CollatzShadowExplorer(QMainWindow):
     def _draw_fft(self, ax, parities):
         if len(parities) < 4:
             return
-        signal = np.array(parities) * 2 - 1
+        signal = np.array(parities, dtype=float) * 2 - 1
+        # Remove DC component
+        signal -= np.mean(signal)
+        
         fft_vals = np.abs(np.fft.rfft(signal))
+        power = fft_vals**2
         freqs = np.fft.rfftfreq(len(signal))
-        ax.plot(freqs, fft_vals, color="#ed8936", linewidth=1.5)
-        ax.fill_between(freqs, fft_vals, 0, color="#ed8936", alpha=0.15)
-        ax.set_ylabel("Magnitude", color="#b0b0b0")
+        
+        ax.plot(freqs, power, color="#ed8936", linewidth=1.5)
+        ax.fill_between(freqs, power, 0, color="#ed8936", alpha=0.15)
+        ax.set_ylabel("Power", color="#b0b0b0")
         ax.set_xlabel("Frequency", color="#b0b0b0")
         ax.set_title("Power Spectrum (Fast Fourier Transform)",
                      color="#e0e0e0")
@@ -429,10 +434,14 @@ class CollatzShadowExplorer(QMainWindow):
     def _draw_autocorrelation(self, ax, parities):
         if len(parities) < 5:
             return
-        signal = np.array(parities) * 2 - 1
+        signal = np.array(parities, dtype=float) * 2 - 1
+        # Remove DC component
+        signal -= np.mean(signal)
+        
         corr = np.correlate(signal, signal, mode="full")
         corr = corr[len(signal) - 1:]
         corr = corr / corr[0]
+        
         ax.plot(corr, color="#63b3ed", linewidth=1.6)
         ax.fill_between(range(len(corr)), corr, 0, alpha=0.15, color="#63b3ed")
         ax.set_title("Autocorrelation (Parity Memory)", color="#e0e0e0")
@@ -440,8 +449,6 @@ class CollatzShadowExplorer(QMainWindow):
         ax.set_ylabel("Correlation Rate", color="#b0b0b0")
 
     def _text_color_for_value(self, cmap, norm, value):
-        """Return black or white depending on the luminance of the colormap
-        color actually rendered for this cell."""
         normed = norm(value)
         r, g, b, _ = cmap(normed)
         luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b
@@ -457,8 +464,8 @@ class CollatzShadowExplorer(QMainWindow):
             matrix = matrix / matrix.sum()
 
         cmap = plt.get_cmap("viridis")
-        im = ax.imshow(matrix, cmap=cmap)  # auto-scales, same as your original
-        norm = im.norm  # the Normalize instance imshow actually used
+        im = ax.imshow(matrix, cmap=cmap)
+        norm = im.norm
 
         ax.set_title("Parity Transition Matrix", color="#e0e0e0")
         ax.set_xticks([0, 1])
@@ -502,9 +509,9 @@ class CollatzShadowExplorer(QMainWindow):
         walk = np.cumsum(signal)
         ax.plot(walk, color="#9f7aea", linewidth=1.6)
         ax.axhline(0, color="white", alpha=0.4, linewidth=0.8)
-        ax.set_title("Cumulative Parity System Drift", color="#e0e0e0")
+        ax.set_title("Cumulative Parity Drift", color="#e0e0e0")
         ax.set_xlabel("Orbit Step", color="#b0b0b0")
-        ax.set_ylabel("System Bias Factor", color="#b0b0b0")
+        ax.set_ylabel("Cumulative Parity Drift", color="#b0b0b0")
 
     def _draw_dashboard(self, values, parities, window, block_length):
         self.figure.clear()
@@ -603,7 +610,6 @@ class CollatzShadowExplorer(QMainWindow):
                           for i in range(2**block_length)]
                 frequencies = [counts.get(label, 0) for label in labels]
 
-                # FIX 1: Use range(len(labels)) instead of labels string array for the X positions
                 x_positions = range(len(labels))
 
                 ax.bar(x_positions, frequencies, color="#38a169",
@@ -612,7 +618,6 @@ class CollatzShadowExplorer(QMainWindow):
                     f"Parity Block Distribution Metrics (Length: {block_length})", color="#e0e0e0")
                 ax.set_ylabel("Occurrences Index", color="#b0b0b0")
 
-                # FIX 2: Set the exact numerical tick marks and map the text labels to them
                 ax.set_xticks(x_positions)
                 ax.set_xticklabels(labels, rotation=45, ha="right")
 
