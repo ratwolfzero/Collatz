@@ -431,7 +431,7 @@ class CollatzShadowExplorer(QMainWindow):
         ax.grid(False)
         for i in range(2):
             for j in range(2):
-                ax.text(j, i, f"{matrix[i,j]:.2f}", ha="center", va="center", color="white")
+                ax.text(j, i, f"{matrix[i,j]:.2f}", ha="center", va="center", color="black")
 
     def _draw_run_length(self, ax, parities):
         if len(parities) < 2:
