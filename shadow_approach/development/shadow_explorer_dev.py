@@ -423,7 +423,7 @@ class CollatzShadowExplorer(QMainWindow):
         if matrix.sum() > 0:
             matrix = matrix / matrix.sum()
         ax.imshow(matrix, cmap="viridis")
-        ax.set_title("Parity Transition Matrix Matrix", color="#e0e0e0")
+        ax.set_title("Parity Transition Matrix", color="#e0e0e0")
         ax.set_xticks([0, 1])
         ax.set_yticks([0, 1])
         ax.set_xticklabels(["0 (Even)", "1 (Odd)"])
