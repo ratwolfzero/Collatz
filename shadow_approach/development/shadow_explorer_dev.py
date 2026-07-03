@@ -602,16 +602,16 @@ class CollatzShadowExplorer(QMainWindow):
                 labels = [format(i, f"0{block_length}b")
                           for i in range(2**block_length)]
                 frequencies = [counts.get(label, 0) for label in labels]
-                
+
                 # FIX 1: Use range(len(labels)) instead of labels string array for the X positions
                 x_positions = range(len(labels))
-                
+
                 ax.bar(x_positions, frequencies, color="#38a169",
                        alpha=0.85, edgecolor="#2f855a", linewidth=0.7)
                 ax.set_title(
                     f"Parity Block Distribution Metrics (Length: {block_length})", color="#e0e0e0")
                 ax.set_ylabel("Occurrences Index", color="#b0b0b0")
-                
+
                 # FIX 2: Set the exact numerical tick marks and map the text labels to them
                 ax.set_xticks(x_positions)
                 ax.set_xticklabels(labels, rotation=45, ha="right")
