@@ -1,4 +1,4 @@
-import os
+#import os
 import sys
 from collections import Counter
 import matplotlib
@@ -414,6 +414,14 @@ class CollatzShadowExplorer(QMainWindow):
         ax.set_xlabel("Lag Offset", color="#b0b0b0")
         ax.set_ylabel("Correlation Rate", color="#b0b0b0")
 
+    def _text_color_for_value(self, cmap, norm, value):
+        """Return black or white depending on the luminance of the colormap
+        color actually rendered for this cell."""
+        normed = norm(value)
+        r, g, b, _ = cmap(normed)
+        luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b
+        return "black" if luminance > 0.5 else "white"
+
     def _draw_transition_heatmap(self, ax, parities):
         if len(parities) < 2:
             return
@@ -422,17 +430,25 @@ class CollatzShadowExplorer(QMainWindow):
             matrix[a, b] += 1
         if matrix.sum() > 0:
             matrix = matrix / matrix.sum()
-        ax.imshow(matrix, cmap="viridis")
+
+        cmap = plt.get_cmap("viridis")
+        im = ax.imshow(matrix, cmap=cmap)  # auto-scales, same as your original
+        norm = im.norm  # the Normalize instance imshow actually used
+
         ax.set_title("Parity Transition Matrix", color="#e0e0e0")
         ax.set_xticks([0, 1])
         ax.set_yticks([0, 1])
         ax.set_xticklabels(["0 (Even)", "1 (Odd)"])
         ax.set_yticklabels(["0 (Even)", "1 (Odd)"])
         ax.grid(False)
+
         for i in range(2):
             for j in range(2):
-                ax.text(j, i, f"{matrix[i,j]:.2f}", ha="center", va="center", color="black")
+                value = matrix[i, j]
+                text_color = self._text_color_for_value(cmap, norm, value)
+                ax.text(j, i, f"{value:.2f}", ha="center", va="center", color=text_color)
 
+            
     def _draw_run_length(self, ax, parities):
         if len(parities) < 2:
             return
