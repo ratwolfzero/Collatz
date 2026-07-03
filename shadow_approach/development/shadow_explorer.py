@@ -29,10 +29,10 @@ matplotlib.use("QtAgg")
 
 plt.rcParams.update(
     {
-        "axes.titlesize": 10,
+        "axes.titlesize": 8,
         "axes.labelsize": 9,
-        "axes.titleweight": "bold",
-        "axes.labelweight": "bold",
+        "axes.titleweight": "normal",
+        "axes.labelweight": "normal",
         "xtick.labelsize": 9,
         "ytick.labelsize": 9,
         "legend.fontsize": 9,
@@ -64,7 +64,7 @@ class CollatzShadowExplorer(QMainWindow):
         self.setWindowTitle("Collatz Shadow Research Explorer")
         self.resize(1380, 920)
 
-        self.figure = Figure(figsize=(13, 8), dpi=120, facecolor="#eeeeee")
+        self.figure = Figure(figsize=(13, 8), dpi=120, facecolor="#eeeeee", constrained_layout=True)
         self.canvas = FigureCanvasQTAgg(self.figure)
         self.canvas.setMinimumHeight(520)
         self.toolbar = NavigationToolbar2QT(self.canvas, self)
@@ -80,8 +80,8 @@ class CollatzShadowExplorer(QMainWindow):
         # Minimal dark background so the global palette handles most colors.
         central.setStyleSheet(
             "background-color: #121212;"
-            "QLabel { color: #e6eef8; font-size: 14px; }"
-            "QCheckBox { color: #e6eef8; font-size: 14px; }"
+            "QLabel { color: #e6eef8; font-size: 16px; }"
+            "QCheckBox { color: #e6eef8; font-size: 16px; }"
         )
         main_layout = QHBoxLayout(central)
         main_layout.setContentsMargins(18, 18, 18, 18)
