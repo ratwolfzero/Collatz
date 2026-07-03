@@ -140,10 +140,10 @@ class CollatzShadowExplorer(QMainWindow):
         self.start_value_spin = QSpinBox()
         self.start_value_spin.setRange(1, 10**9)
         self.start_value_spin.setValue(27)
-        form_layout.addRow("Initial Seed:", self.start_value_spin)
+        form_layout.addRow("Initial Vlue:", self.start_value_spin)
 
         self.max_steps_spin = QSpinBox()
-        self.max_steps_spin.setRange(10, 2000)
+        self.max_steps_spin.setRange(10, 10000)
         self.max_steps_spin.setValue(1000)
         form_layout.addRow("Max Steps:", self.max_steps_spin)
 
@@ -656,7 +656,7 @@ class CollatzShadowExplorer(QMainWindow):
             block_summary = "Common Block: n/a"
 
         summary = (
-            f"[Input Seed]: {n} | [Total Steps]: {len(values)} | [Parity Splits]: {odd_count} Odd / {even_count} Even\n"
+            f"[Input Value]: {n} | [Total Steps]: {len(values)} | [Parity Splits]: {odd_count} Odd / {even_count} Even\n"
             f"[Raw Parity Bits]: {shadow_word[:76]}{'...' if len(shadow_word) > 76 else ''}\n"
             f"[System Space Configurations]: Target Window={window} | {block_summary}"
         )
