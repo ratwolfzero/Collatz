@@ -1,4 +1,4 @@
-#import os
+# import os
 import sys
 from collections import Counter
 import matplotlib
@@ -70,7 +70,8 @@ class CollatzShadowExplorer(QMainWindow):
         self.resize(1420, 950)
 
         # Core Matplotlib Setup
-        self.figure = Figure(dpi=120, facecolor="#1e1e1e", constrained_layout=True)
+        self.figure = Figure(dpi=120, facecolor="#1e1e1e",
+                             constrained_layout=True)
         self.canvas = FigureCanvasQTAgg(self.figure)
         self.toolbar = NavigationToolbar2QT(self.canvas, self)
 
@@ -101,7 +102,8 @@ class CollatzShadowExplorer(QMainWindow):
 
         self.summary_label = QLabel("Initializing analysis...")
         self.summary_label.setWordWrap(True)
-        self.summary_label.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignTop)
+        self.summary_label.setAlignment(
+            Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignTop)
         self.summary_label.setMinimumHeight(70)
         self.summary_label.setStyleSheet(
             "QLabel { background-color: #1e1e1e; border: 1px solid #333333; border-radius: 6px; padding: 10px; font-family: monospace; }"
@@ -215,7 +217,8 @@ class CollatzShadowExplorer(QMainWindow):
         if not checked:
             return
 
-        active_panels = [cb for cb in self.panel_checkboxes.values() if cb.isChecked()]
+        active_panels = [
+            cb for cb in self.panel_checkboxes.values() if cb.isChecked()]
         if len(active_panels) > 4:
             self.sender().blockSignals(True)
             self.sender().setChecked(False)
@@ -235,8 +238,10 @@ class CollatzShadowExplorer(QMainWindow):
         block_length = self.block_length_spin.value()
 
         values, parities = collatz_accelerated(n, max_steps=max_steps)
-        self._draw_dashboard(values, parities, window=window, block_length=block_length)
-        self._update_summary(n, values, parities, window=window, block_length=block_length)
+        self._draw_dashboard(values, parities, window=window,
+                             block_length=block_length)
+        self._update_summary(n, values, parities,
+                             window=window, block_length=block_length)
 
     def _selected_panels(self):
         return [name for name, checkbox in self.panel_checkboxes.items() if checkbox.isChecked()]
@@ -247,33 +252,40 @@ class CollatzShadowExplorer(QMainWindow):
 
     def _draw_phase_space(self, ax, values, parities):
         if len(values) < 2:
-            ax.text(0.5, 0.5, "Insufficient depth for attractor mapping.", ha="center", va="center", color="#888888")
+            ax.text(0.5, 0.5, "Insufficient depth for attractor mapping.",
+                    ha="center", va="center", color="#888888")
             return
 
         # Core engine trajectories mapped in 2D space
         x_coords = values[:-1]
         y_coords = values[1:]
 
-        ax.plot(x_coords, y_coords, color="#4a5568", linewidth=0.5, alpha=0.4, zorder=1)
+        ax.plot(x_coords, y_coords, color="#4a5568",
+                linewidth=0.5, alpha=0.4, zorder=1)
         # FIXED: Removed [:-1] slice from parities to match the exact size of x_coords and y_coords
-        scatter = ax.scatter(x_coords, y_coords, c=parities, cmap="coolwarm", s=10, alpha=0.75, zorder=2)
+        scatter = ax.scatter(x_coords, y_coords, c=parities,
+                             cmap="coolwarm", s=10, alpha=0.75, zorder=2)
 
         ax.set_xscale("log")
         ax.set_yscale("log")
-        ax.set_title("Phase-Space Embedding Attractor (x_n vs x_n+1)", color="#e0e0e0")
+        ax.set_title(
+            "Phase-Space Embedding Attractor (x_n vs x_n+1)", color="#e0e0e0")
         ax.set_xlabel("State space x_n (Log)", color="#b0b0b0")
         ax.set_ylabel("State space x_n+1 (Log)", color="#b0b0b0")
 
     def _draw_recurrence_matrix(self, ax, parities):
         if len(parities) < 4:
-            ax.text(0.5, 0.5, "Insufficient matrix depth.", ha="center", va="center", color="#888888")
+            ax.text(0.5, 0.5, "Insufficient matrix depth.",
+                    ha="center", va="center", color="#888888")
             return
 
         p_arr = np.array(parities).reshape(-1, 1)
         recurrence_matrix = (p_arr == p_arr.T).astype(int)
 
-        ax.imshow(recurrence_matrix, cmap="binary", origin="lower", interpolation="none", alpha=0.85)
-        ax.set_title("Parity Recurrence State Matrix (2D Global Textures)", color="#e0e0e0")
+        ax.imshow(recurrence_matrix, cmap="binary",
+                  origin="lower", interpolation="none", alpha=0.85)
+        ax.set_title(
+            "Parity Recurrence State Matrix (2D Global Textures)", color="#e0e0e0")
         ax.set_xlabel("Sequence Vector Time (i)", color="#b0b0b0")
         ax.set_ylabel("Sequence Vector Time (j)", color="#b0b0b0")
         ax.grid(False)
@@ -296,7 +308,7 @@ class CollatzShadowExplorer(QMainWindow):
         positions = []
 
         for i in range(len(signal) - window + 1):
-            chunk = signal[i : i + window]
+            chunk = signal[i: i + window]
             fft_vals = np.abs(np.fft.rfft(chunk))
             psd = fft_vals**2
             psd_sum = np.sum(psd)
@@ -308,7 +320,8 @@ class CollatzShadowExplorer(QMainWindow):
 
                 n_bins = len(fft_vals)
                 if n_bins > 1:
-                    entropy /= np.log2(n_bins)  # Enforce standard normalization limit [0, 1]
+                    # Enforce standard normalization limit [0, 1]
+                    entropy /= np.log2(n_bins)
             else:
                 entropy = 0
 
@@ -318,7 +331,8 @@ class CollatzShadowExplorer(QMainWindow):
         ax.plot(positions, se_values, color="#fc8181", linewidth=1.6)
         ax.fill_between(positions, se_values, 0, color="#fc8181", alpha=0.15)
         ax.set_ylim(0, 1.05)
-        ax.set_title(f"Rolling Spectral Entropy Spectrum (Window: {window})", color="#e0e0e0")
+        ax.set_title(
+            f"Rolling Spectral Entropy Spectrum (Window: {window})", color="#e0e0e0")
         ax.set_ylabel("Normalized Chaos Rank", color="#b0b0b0")
 
     # =========================================================================
@@ -327,11 +341,12 @@ class CollatzShadowExplorer(QMainWindow):
 
     def _draw_de_bruijn_network(self, ax, parities, block_length):
         if len(parities) < block_length + 1:
-            ax.text(0.5, 0.5, "Insufficient step counts for maps.", ha="center", va="center", color="#888888")
+            ax.text(0.5, 0.5, "Insufficient step counts for maps.",
+                    ha="center", va="center", color="#888888")
             return
 
         blocks = [
-            "".join(str(b) for b in parities[i : i + block_length]) for i in range(len(parities) - block_length + 1)
+            "".join(str(b) for b in parities[i: i + block_length]) for i in range(len(parities) - block_length + 1)
         ]
         transitions = Counter(zip(blocks[:-1], blocks[1:]))
 
@@ -345,10 +360,14 @@ class CollatzShadowExplorer(QMainWindow):
         max_w = max(weights) if weights else 1
         normalized_weights = [0.8 + (w / max_w) * 2.5 for w in weights]
 
-        nx.draw_networkx_edges(G, pos, ax=ax, width=normalized_weights, edge_color="#718096", arrows=True, arrowsize=12)
-        nx.draw_networkx_nodes(G, pos, ax=ax, node_color="#2b6cb0", node_size=350, edgecolors="#63b3ed")
-        nx.draw_networkx_labels(G, pos, ax=ax, font_size=8, font_color="#f7fafc", font_weight="bold")
-        ax.set_title(f"Directed De Bruijn Network (Block Length: {block_length})", color="#e0e0e0")
+        nx.draw_networkx_edges(G, pos, ax=ax, width=normalized_weights,
+                               edge_color="#718096", arrows=True, arrowsize=12)
+        nx.draw_networkx_nodes(
+            G, pos, ax=ax, node_color="#2b6cb0", node_size=350, edgecolors="#63b3ed")
+        nx.draw_networkx_labels(
+            G, pos, ax=ax, font_size=8, font_color="#f7fafc", font_weight="bold")
+        ax.set_title(
+            f"Directed De Bruijn Network (Block Length: {block_length})", color="#e0e0e0")
         ax.axis("off")
 
     def _draw_turtle_walk(self, ax, parities):
@@ -363,23 +382,26 @@ class CollatzShadowExplorer(QMainWindow):
         ax.plot(x, y, color="#9f7aea", linewidth=1.5, alpha=0.9)
         ax.scatter([0], [0], color="#48bb78", zorder=5, label="Start")
         ax.scatter([x[-1]], [y[-1]], color="#f56565", zorder=5, label="End")
-        ax.set_title("2D Turtle Random Walk (0=Left, 1=Right)", color="#e0e0e0")
+        ax.set_title("2D Turtle Random Walk (0=Left, 1=Right)",
+                     color="#e0e0e0")
         ax.legend(loc="best", frameon=False, labelcolor="#e0e0e0")
         ax.set_aspect("equal", "datalim")
 
     def _draw_shannon_entropy(self, ax, parities, window, block_length):
         if len(parities) < window + block_length:
-            ax.text(0.5, 0.5, f"Window ({window}) too large.", ha="center", va="center", color="#888888")
+            ax.text(0.5, 0.5, f"Window ({window}) too large.",
+                    ha="center", va="center", color="#888888")
             return
         entropies, positions = [], []
         for i in range(len(parities) - window + 1):
-            chunk = parities[i : i + window]
+            chunk = parities[i: i + window]
             blocks = [
-                "".join(str(b) for b in chunk[j : j + block_length]) for j in range(len(chunk) - block_length + 1)
+                "".join(str(b) for b in chunk[j: j + block_length]) for j in range(len(chunk) - block_length + 1)
             ]
             counts = Counter(blocks)
             total = sum(counts.values())
-            ent = -sum((count / total) * np.log2(count / total) for count in counts.values())
+            ent = -sum((count / total) * np.log2(count / total)
+                       for count in counts.values())
             entropies.append(ent)
             positions.append(i + window / 2)
 
@@ -387,7 +409,8 @@ class CollatzShadowExplorer(QMainWindow):
         ax.fill_between(positions, entropies, 0, color="#38b2ac", alpha=0.15)
         ax.set_ylim(0, block_length)
         ax.set_ylabel("Bits of Entropy", color="#b0b0b0")
-        ax.set_title(f"Rolling Shannon Entropy (Window: {window}, Block: {block_length})", color="#e0e0e0")
+        ax.set_title(
+            f"Rolling Shannon Entropy (Window: {window}, Block: {block_length})", color="#e0e0e0")
 
     def _draw_fft(self, ax, parities):
         if len(parities) < 4:
@@ -399,14 +422,15 @@ class CollatzShadowExplorer(QMainWindow):
         ax.fill_between(freqs, fft_vals, 0, color="#ed8936", alpha=0.15)
         ax.set_ylabel("Magnitude", color="#b0b0b0")
         ax.set_xlabel("Frequency", color="#b0b0b0")
-        ax.set_title("Power Spectrum (Fast Fourier Transform)", color="#e0e0e0")
+        ax.set_title("Power Spectrum (Fast Fourier Transform)",
+                     color="#e0e0e0")
 
     def _draw_autocorrelation(self, ax, parities):
         if len(parities) < 5:
             return
         signal = np.array(parities) * 2 - 1
         corr = np.correlate(signal, signal, mode="full")
-        corr = corr[len(signal) - 1 :]
+        corr = corr[len(signal) - 1:]
         corr = corr / corr[0]
         ax.plot(corr, color="#63b3ed", linewidth=1.6)
         ax.fill_between(range(len(corr)), corr, 0, alpha=0.15, color="#63b3ed")
@@ -446,9 +470,9 @@ class CollatzShadowExplorer(QMainWindow):
             for j in range(2):
                 value = matrix[i, j]
                 text_color = self._text_color_for_value(cmap, norm, value)
-                ax.text(j, i, f"{value:.2f}", ha="center", va="center", color=text_color)
+                ax.text(j, i, f"{value:.2f}", ha="center",
+                        va="center", color=text_color)
 
-            
     def _draw_run_length(self, ax, parities):
         if len(parities) < 2:
             return
@@ -517,7 +541,8 @@ class CollatzShadowExplorer(QMainWindow):
         }
 
         heights = [panel_heights.get(panel, 1.0) for panel in selected_panels]
-        gs = self.figure.add_gridspec(len(selected_panels), 1, height_ratios=heights, hspace=0.45)
+        gs = self.figure.add_gridspec(
+            len(selected_panels), 1, height_ratios=heights, hspace=0.45)
 
         for index, panel in enumerate(selected_panels):
             ax = self.figure.add_subplot(gs[index])
@@ -529,15 +554,19 @@ class CollatzShadowExplorer(QMainWindow):
                 spine.set_color("#333333")
 
             if panel == "orbit":
-                ax.plot(range(len(values)), values, marker="o", markersize=3, linewidth=1.5, color="#3182ce")
-                ax.set_title("Accelerated Orbit and Parity Shadow Sequence", color="#e0e0e0")
+                ax.plot(range(len(values)), values, marker="o",
+                        markersize=3, linewidth=1.5, color="#3182ce")
+                ax.set_title(
+                    "Accelerated Orbit and Parity Shadow Sequence", color="#e0e0e0")
                 ax.set_ylabel("Numerical Value Space", color="#b0b0b0")
 
                 ax2 = ax.twinx()
-                ax2.step(range(len(parities)), parities, where="mid", color="#e53e3e", linewidth=1.2, alpha=0.8)
+                ax2.step(range(len(parities)), parities, where="mid",
+                         color="#e53e3e", linewidth=1.2, alpha=0.8)
                 ax2.set_ylim(-0.1, 1.1)
                 ax2.set_yticks([0, 1])
-                ax2.set_yticklabels(["Even (0)", "Odd (1)"], color="#b0b0b0", fontsize=8)
+                ax2.set_yticklabels(["Even (0)", "Odd (1)"],
+                                    color="#b0b0b0", fontsize=8)
                 ax2.spines["right"].set_color("#333333")
 
             elif panel == "phasespace":
@@ -551,24 +580,31 @@ class CollatzShadowExplorer(QMainWindow):
 
             elif panel == "density":
                 if len(parities) >= window:
-                    positions = [i + window / 2 for i in range(len(parities) - window + 1)]
-                    density = [np.mean(parities[i : i + window]) for i in range(len(parities) - window + 1)]
+                    positions = [i + window /
+                                 2 for i in range(len(parities) - window + 1)]
+                    density = [np.mean(parities[i: i + window])
+                               for i in range(len(parities) - window + 1)]
                     ax.plot(positions, density, linewidth=1.8, color="#dd6b20")
-                    ax.fill_between(positions, density, 0, color="#dd6b20", alpha=0.1)
+                    ax.fill_between(positions, density, 0,
+                                    color="#dd6b20", alpha=0.1)
                 ax.set_ylim(0, 1)
                 ax.set_ylabel("Odd Vector Density", color="#b0b0b0")
-                ax.set_title(f"Rolling Parity Density Metrics (Window: {window})", color="#e0e0e0")
+                ax.set_title(
+                    f"Rolling Parity Density Metrics (Window: {window})", color="#e0e0e0")
 
             elif panel == "blocks":
                 blocks = [
-                    "".join(str(b) for b in parities[i : i + block_length])
+                    "".join(str(b) for b in parities[i: i + block_length])
                     for i in range(len(parities) - block_length + 1)
                 ]
                 counts = Counter(blocks)
-                labels = [format(i, f"0{block_length}b") for i in range(2**block_length)]
+                labels = [format(i, f"0{block_length}b")
+                          for i in range(2**block_length)]
                 frequencies = [counts.get(label, 0) for label in labels]
-                ax.bar(labels, frequencies, color="#38a169", alpha=0.85, edgecolor="#2f855a", linewidth=0.7)
-                ax.set_title(f"Parity Block Distribution Metrics (Length: {block_length})", color="#e0e0e0")
+                ax.bar(labels, frequencies, color="#38a169",
+                       alpha=0.85, edgecolor="#2f855a", linewidth=0.7)
+                ax.set_title(
+                    f"Parity Block Distribution Metrics (Length: {block_length})", color="#e0e0e0")
                 ax.set_ylabel("Occurrences Index", color="#b0b0b0")
                 ax.set_xticklabels(labels, rotation=45, ha="right")
 
@@ -604,7 +640,8 @@ class CollatzShadowExplorer(QMainWindow):
         even_count = len(parities) - odd_count
 
         if len(parities) >= block_length:
-            blocks = [shadow_word[i : i + block_length] for i in range(len(shadow_word) - block_length + 1)]
+            blocks = [shadow_word[i: i + block_length]
+                      for i in range(len(shadow_word) - block_length + 1)]
             most_common = Counter(blocks).most_common(1)
             block_summary = f"Common Block: {most_common[0][0]} ({most_common[0][1]}x)" if most_common else "n/a"
         else:
@@ -620,9 +657,11 @@ class CollatzShadowExplorer(QMainWindow):
     def save_current_figure(self):
         out_dir = os.path.join(os.path.dirname(__file__), "shadow_figures")
         os.makedirs(out_dir, exist_ok=True)
-        out_path = os.path.join(out_dir, f"collatz_dynamics_matrix_{self.start_value_spin.value()}.png")
+        out_path = os.path.join(
+            out_dir, f"collatz_dynamics_matrix_{self.start_value_spin.value()}.png")
         self.figure.savefig(out_path, dpi=300, bbox_inches="tight")
-        QMessageBox.information(self, "Export Complete", f"High-fidelity matrix profile saved to:\n{out_path}")
+        QMessageBox.information(
+            self, "Export Complete", f"High-fidelity matrix profile saved to:\n{out_path}")
 
 
 def main():
