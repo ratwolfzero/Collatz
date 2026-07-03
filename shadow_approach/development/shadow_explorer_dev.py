@@ -1,4 +1,4 @@
-# import os
+import os
 import sys
 from collections import Counter
 import matplotlib
