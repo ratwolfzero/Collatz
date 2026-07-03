@@ -644,7 +644,7 @@ def main():
     app.setPalette(palette)
 
     sys_font = QFontDatabase.systemFont(QFontDatabase.SystemFont.GeneralFont)
-    sys_font.setPointSize(12)
+    sys_font.setPointSize(13)
     app.setFont(sys_font)
 
     window = CollatzShadowExplorer()
