@@ -167,12 +167,12 @@ class CollatzShadowExplorer(QMainWindow):
         form_layout.addRow("Initial Value:", self.start_value_spin)
 
         self.max_steps_spin = QSpinBox()
-        self.max_steps_spin.setRange(10, 10000)
+        self.max_steps_spin.setRange(10, 1000)
         self.max_steps_spin.setValue(1000)
         form_layout.addRow("Max Steps:", self.max_steps_spin)
 
         self.window_spin = QSpinBox()
-        self.window_spin.setRange(4, 2000)
+        self.window_spin.setRange(4, 600)
         self.window_spin.setValue(30)
         form_layout.addRow("Rolling Window:", self.window_spin)
 
@@ -182,7 +182,7 @@ class CollatzShadowExplorer(QMainWindow):
         form_layout.addRow("Block Length:", self.block_length_spin)
 
         self.preset_combo = QComboBox()
-        self.preset_combo.addItems(["27", "19", "97", "871", "1003", "837799"])
+        self.preset_combo.addItems([ "9","27", "97", "871", "6171","77031","837799","8400511","63728127","670617279"])
         self.preset_combo.currentTextChanged.connect(self._apply_preset)
         form_layout.addRow("Quick Preset:", self.preset_combo)
         layout.addWidget(param_group)
