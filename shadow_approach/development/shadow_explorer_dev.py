@@ -190,7 +190,7 @@ class CollatzShadowExplorer(QMainWindow):
 
         self.preset_combo = QComboBox()
         self.preset_combo.addItems(
-            [ "27", "97", "871", "6171", "77031", "837799", "8400511", "63728127", "670617279", "93571393692802302"])
+            ["27", "97", "871", "6171", "77031", "837799", "8400511", "63728127", "670617279", "93571393692802302"])
         self.preset_combo.currentTextChanged.connect(self._apply_preset)
         form_layout.addRow("Quick Preset:", self.preset_combo)
         layout.addWidget(param_group)
@@ -470,7 +470,7 @@ class CollatzShadowExplorer(QMainWindow):
     def _draw_lz_complexity(self, ax, parities, window):
         if len(parities) < window + 2:
             ax.text(0.5, 0.5, "Orbit too short for LZ complexity.",
-                ha="center", va="center", color="#888888")
+                    ha="center", va="center", color="#888888")
             return
 
         lz_values = []
@@ -504,14 +504,14 @@ class CollatzShadowExplorer(QMainWindow):
 
         # A value of 1.0 now strictly means "maximum possible entropy/disorder"
         ax.axhline(1.0, color="#718096", linestyle="--", linewidth=1.2,
-               alpha=0.8, label="Theoretical Randomness Limit")
+                   alpha=0.8, label="Theoretical Randomness Limit")
 
-        ax.set_ylim(0, 1.1) 
+        ax.set_ylim(0, 1.1)
         ax.set_ylabel("Normalized Complexity", color="#b0b0b0")
         ax.set_title(
-        f"Rolling Lempel-Ziv Algorithmic Complexity (Window: {window})", color="#e0e0e0")
+            f"Rolling Lempel-Ziv Algorithmic Complexity (Window: {window})", color="#e0e0e0")
         ax.legend(loc="upper right", frameon=False,
-              labelcolor="#e0e0e0", fontsize=8)
+                  labelcolor="#e0e0e0", fontsize=8)
 
     def _draw_fft(self, ax, parities):
         if len(parities) < 4:
