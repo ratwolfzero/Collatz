@@ -179,7 +179,7 @@ class CollatzShadowExplorer(QMainWindow):
         form_layout.addRow("Max Steps:", self.max_steps_spin)
 
         self.window_spin = QSpinBox()
-        self.window_spin.setRange(4, 1000)
+        self.window_spin.setRange(4, 2000)
         self.window_spin.setValue(30)
         form_layout.addRow("Rolling Window:", self.window_spin)
 
