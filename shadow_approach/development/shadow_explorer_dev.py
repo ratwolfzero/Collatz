@@ -735,7 +735,8 @@ class CollatzShadowExplorer(QMainWindow):
                 self._draw_fft(ax, parities)
 
             elif panel == "network":
-                self._draw_observed_nlock_transition_network(ax, parities, block_length)
+                self._draw_observed_nlock_transition_network(
+                    ax, parities, block_length)
 
             elif panel == "autocorr":
                 self._draw_autocorrelation(ax, parities)
