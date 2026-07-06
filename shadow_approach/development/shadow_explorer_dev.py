@@ -1,6 +1,8 @@
 import os
 import sys
 from collections import Counter
+from PyQt6.QtGui import QRegularExpressionValidator
+from PyQt6.QtCore import QRegularExpression
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
@@ -18,6 +20,7 @@ from PyQt6.QtWidgets import (
     QGroupBox,
     QHBoxLayout,
     QLabel,
+    QLineEdit,  
     QMainWindow,
     QMessageBox,
     QPushButton,
@@ -161,18 +164,22 @@ class CollatzShadowExplorer(QMainWindow):
         form_layout.setLabelAlignment(Qt.AlignmentFlag.AlignRight)
         form_layout.setSpacing(8)
 
-        self.start_value_spin = QSpinBox()
-        self.start_value_spin.setRange(1, 10**9)
-        self.start_value_spin.setValue(27)
-        form_layout.addRow("Initial Value:", self.start_value_spin)
+        self.start_value_edit = QLineEdit("27")
+
+        # Allow only positive integers
+        validator = QRegularExpressionValidator(
+        QRegularExpression(r"[1-9]\d*"))
+        self.start_value_edit.setValidator(validator)
+
+        form_layout.addRow("Initial Value:", self.start_value_edit)
 
         self.max_steps_spin = QSpinBox()
-        self.max_steps_spin.setRange(10, 1000)
+        self.max_steps_spin.setRange(10, 10000)
         self.max_steps_spin.setValue(1000)
         form_layout.addRow("Max Steps:", self.max_steps_spin)
 
         self.window_spin = QSpinBox()
-        self.window_spin.setRange(4, 600)
+        self.window_spin.setRange(4, 1000)
         self.window_spin.setValue(30)
         form_layout.addRow("Rolling Window:", self.window_spin)
 
@@ -255,10 +262,31 @@ class CollatzShadowExplorer(QMainWindow):
 
     def _apply_preset(self, value):
         if value:
-            self.start_value_spin.setValue(int(value))
+            self.start_value_edit.setText(value)
 
     def refresh_plot(self):
-        n = self.start_value_spin.value()
+        text = self.start_value_edit.text().strip()
+
+        if not text:
+            QMessageBox.warning(
+                self,
+                "Invalid Input",
+                "Please enter a positive integer."
+        )
+            return   # <-- MUST be inside the if block
+
+        n = int(text)
+
+        max_steps = self.max_steps_spin.value()
+        window = self.window_spin.value()
+        block_length = self.block_length_spin.value()
+
+        values, parities = collatz_accelerated(n, max_steps=max_steps)
+
+        self._draw_dashboard(values, parities, window, block_length)
+        self._update_summary(n, values, parities, window, block_length)
+
+        n = int(text)
         max_steps = self.max_steps_spin.value()
         window = self.window_spin.value()
         block_length = self.block_length_spin.value()
@@ -736,7 +764,7 @@ class CollatzShadowExplorer(QMainWindow):
         out_dir = os.path.join(os.path.dirname(__file__), "shadow_figures")
         os.makedirs(out_dir, exist_ok=True)
         out_path = os.path.join(
-            out_dir, f"collatz_dynamics_matrix_{self.start_value_spin.value()}.png")
+            out_dir, f"collatz_dynamics_matrix_{self.start_value_edit.text()}.png")
         self.figure.savefig(out_path, dpi=300, bbox_inches="tight")
         QMessageBox.information(
             self, "Export Complete", f"High-fidelity matrix profile saved to:\n{out_path}")
