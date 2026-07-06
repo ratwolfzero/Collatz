@@ -174,8 +174,8 @@ class CollatzShadowExplorer(QMainWindow):
         form_layout.addRow("Initial Value:", self.start_value_edit)
 
         self.max_steps_spin = QSpinBox()
-        self.max_steps_spin.setRange(10, 10000)
-        self.max_steps_spin.setValue(1000)
+        self.max_steps_spin.setRange(10, 5000)
+        self.max_steps_spin.setValue(2000)
         form_layout.addRow("Max Steps:", self.max_steps_spin)
 
         self.window_spin = QSpinBox()
