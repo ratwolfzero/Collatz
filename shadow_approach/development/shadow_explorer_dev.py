@@ -470,40 +470,48 @@ class CollatzShadowExplorer(QMainWindow):
     def _draw_lz_complexity(self, ax, parities, window):
         if len(parities) < window + 2:
             ax.text(0.5, 0.5, "Orbit too short for LZ complexity.",
-                    ha="center", va="center", color="#888888")
+                ha="center", va="center", color="#888888")
             return
 
         lz_values = []
         positions = []
+        N = max(2, window)
 
-        # Calculate theoretical max for normalization: N / log2(N)
-        # max(2, window) prevents division errors on tiny windows
-        safe_window = max(2, window)
-        max_lz = safe_window / np.log2(safe_window)
+        # 1. Compute the EXACT maximum possible LZ78 phrases for finite N
+        k = 1
+        bits_used = 0
+        max_lz = 0
+        while bits_used + (k * (2**k)) <= N:
+            bits_used += k * (2**k)
+            max_lz += 2**k
+            k += 1
+        # Add any remaining fractional phrases from the leftover bits
+        max_lz += (N - bits_used) // k
 
+        # 2. Compute rolling window values
         for i in range(len(parities) - window + 1):
             chunk = parities[i: i + window]
             raw_lz = lz_complexity(chunk)
 
-            # Normalize it against the theoretical max
+            # Normalize against the true physical upper bound
             normalized_lz = raw_lz / max_lz
             lz_values.append(normalized_lz)
             positions.append(i + window / 2)
 
+        # 3. Plotting Updates
         ax.plot(positions, lz_values, linewidth=1.8, color="#e53e3e")
         ax.fill_between(positions, lz_values, 0, color="#e53e3e", alpha=0.15)
 
-        # Add theoretical baseline for pure white noise randomness
+        # A value of 1.0 now strictly means "maximum possible entropy/disorder"
         ax.axhline(1.0, color="#718096", linestyle="--", linewidth=1.2,
-                   alpha=0.8, label="Theoretical Randomness Limit")
+               alpha=0.8, label="Theoretical Randomness Limit")
 
-        y_max = max(1.2, max(lz_values) * 1.1) if lz_values else 1.2
-        ax.set_ylim(0, y_max)
+        ax.set_ylim(0, 1.1) 
         ax.set_ylabel("Normalized Complexity", color="#b0b0b0")
         ax.set_title(
-            f"Rolling Lempel-Ziv Algorithmic Complexity (Window: {window})", color="#e0e0e0")
+        f"Rolling Lempel-Ziv Algorithmic Complexity (Window: {window})", color="#e0e0e0")
         ax.legend(loc="upper right", frameon=False,
-                  labelcolor="#e0e0e0", fontsize=8)
+              labelcolor="#e0e0e0", fontsize=8)
 
     def _draw_fft(self, ax, parities):
         if len(parities) < 4:
