@@ -190,7 +190,7 @@ class CollatzShadowExplorer(QMainWindow):
 
         self.preset_combo = QComboBox()
         self.preset_combo.addItems(
-            [ "27", "97", "871", "6171", "77031", "837799", "8400511", "63728127", "670617279"])
+            [ "27", "97", "871", "6171", "77031", "837799", "8400511", "63728127", "670617279", "93571393692802302"])
         self.preset_combo.currentTextChanged.connect(self._apply_preset)
         form_layout.addRow("Quick Preset:", self.preset_combo)
         layout.addWidget(param_group)
