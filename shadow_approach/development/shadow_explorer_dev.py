@@ -20,7 +20,7 @@ from PyQt6.QtWidgets import (
     QGroupBox,
     QHBoxLayout,
     QLabel,
-    QLineEdit,  
+    QLineEdit,
     QMainWindow,
     QMessageBox,
     QPushButton,
@@ -74,18 +74,18 @@ def lz_complexity(sequence):
     vocab = set()
     prefix = ""
     complexity = 0
-    
+
     for item in sequence:
         prefix += str(item)
         if prefix not in vocab:
             vocab.add(prefix)
             complexity += 1
             prefix = ""
-            
+
     # Add 1 for the final trailing sequence if it didn't complete a new word
     if prefix:
         complexity += 1
-        
+
     return complexity
 
 
@@ -168,7 +168,7 @@ class CollatzShadowExplorer(QMainWindow):
 
         # Allow only positive integers
         validator = QRegularExpressionValidator(
-        QRegularExpression(r"[1-9]\d*"))
+            QRegularExpression(r"[1-9]\d*"))
         self.start_value_edit.setValidator(validator)
 
         form_layout.addRow("Initial Value:", self.start_value_edit)
@@ -189,7 +189,8 @@ class CollatzShadowExplorer(QMainWindow):
         form_layout.addRow("Block Length:", self.block_length_spin)
 
         self.preset_combo = QComboBox()
-        self.preset_combo.addItems([ "9","27", "97", "871", "6171","77031","837799","8400511","63728127","670617279"])
+        self.preset_combo.addItems(
+            [ "27", "97", "871", "6171", "77031", "837799", "8400511", "63728127", "670617279"])
         self.preset_combo.currentTextChanged.connect(self._apply_preset)
         form_layout.addRow("Quick Preset:", self.preset_combo)
         layout.addWidget(param_group)
@@ -272,7 +273,7 @@ class CollatzShadowExplorer(QMainWindow):
                 self,
                 "Invalid Input",
                 "Please enter a positive integer."
-        )
+            )
             return   # <-- MUST be inside the if block
 
         n = int(text)
@@ -363,7 +364,7 @@ class CollatzShadowExplorer(QMainWindow):
             chunk = signal[i: i + window]
             # Mean-center the chunk
             chunk -= np.mean(chunk)
-            
+
             fft_vals = np.abs(np.fft.rfft(chunk))
             psd = fft_vals**2
             psd_sum = np.sum(psd)
@@ -468,22 +469,22 @@ class CollatzShadowExplorer(QMainWindow):
 
     def _draw_lz_complexity(self, ax, parities, window):
         if len(parities) < window + 2:
-            ax.text(0.5, 0.5, "Orbit too short for LZ complexity.", 
+            ax.text(0.5, 0.5, "Orbit too short for LZ complexity.",
                     ha="center", va="center", color="#888888")
             return
-            
+
         lz_values = []
         positions = []
-        
+
         # Calculate theoretical max for normalization: N / log2(N)
         # max(2, window) prevents division errors on tiny windows
         safe_window = max(2, window)
         max_lz = safe_window / np.log2(safe_window)
-        
+
         for i in range(len(parities) - window + 1):
-            chunk = parities[i : i + window]
+            chunk = parities[i: i + window]
             raw_lz = lz_complexity(chunk)
-            
+
             # Normalize it against the theoretical max
             normalized_lz = raw_lz / max_lz
             lz_values.append(normalized_lz)
@@ -491,16 +492,18 @@ class CollatzShadowExplorer(QMainWindow):
 
         ax.plot(positions, lz_values, linewidth=1.8, color="#e53e3e")
         ax.fill_between(positions, lz_values, 0, color="#e53e3e", alpha=0.15)
-        
+
         # Add theoretical baseline for pure white noise randomness
-        ax.axhline(1.0, color="#718096", linestyle="--", linewidth=1.2, 
+        ax.axhline(1.0, color="#718096", linestyle="--", linewidth=1.2,
                    alpha=0.8, label="Theoretical Randomness Limit")
-        
+
         y_max = max(1.2, max(lz_values) * 1.1) if lz_values else 1.2
         ax.set_ylim(0, y_max)
         ax.set_ylabel("Normalized Complexity", color="#b0b0b0")
-        ax.set_title(f"Rolling Lempel-Ziv Algorithmic Complexity (Window: {window})", color="#e0e0e0")
-        ax.legend(loc="upper right", frameon=False, labelcolor="#e0e0e0", fontsize=8)
+        ax.set_title(
+            f"Rolling Lempel-Ziv Algorithmic Complexity (Window: {window})", color="#e0e0e0")
+        ax.legend(loc="upper right", frameon=False,
+                  labelcolor="#e0e0e0", fontsize=8)
 
     def _draw_fft(self, ax, parities):
         if len(parities) < 4:
@@ -508,11 +511,11 @@ class CollatzShadowExplorer(QMainWindow):
         signal = np.array(parities, dtype=float) * 2 - 1
         # Remove DC component
         signal -= np.mean(signal)
-        
+
         fft_vals = np.abs(np.fft.rfft(signal))
         power = fft_vals**2
         freqs = np.fft.rfftfreq(len(signal))
-        
+
         ax.plot(freqs, power, color="#ed8936", linewidth=1.5)
         ax.fill_between(freqs, power, 0, color="#ed8936", alpha=0.15)
         ax.set_ylabel("Power", color="#b0b0b0")
@@ -526,11 +529,11 @@ class CollatzShadowExplorer(QMainWindow):
         signal = np.array(parities, dtype=float) * 2 - 1
         # Remove DC component
         signal -= np.mean(signal)
-        
+
         corr = np.correlate(signal, signal, mode="full")
         corr = corr[len(signal) - 1:]
         corr = corr / corr[0]
-        
+
         ax.plot(corr, color="#63b3ed", linewidth=1.6)
         ax.fill_between(range(len(corr)), corr, 0, alpha=0.15, color="#63b3ed")
         ax.set_title("Autocorrelation (Parity Memory)", color="#e0e0e0")
@@ -716,7 +719,7 @@ class CollatzShadowExplorer(QMainWindow):
 
             elif panel == "entropy":
                 self._draw_shannon_entropy(ax, parities, window, block_length)
-                
+
             elif panel == "lz_complexity":
                 self._draw_lz_complexity(ax, parities, window)
 
