@@ -276,16 +276,16 @@ class CollatzShadowExplorer(QMainWindow):
             )
             return   # <-- MUST be inside the if block
 
-        n = int(text)
+        #n = int(text)
 
-        max_steps = self.max_steps_spin.value()
-        window = self.window_spin.value()
-        block_length = self.block_length_spin.value()
+        #max_steps = self.max_steps_spin.value()
+        #window = self.window_spin.value()
+        #block_length = self.block_length_spin.value()
 
-        values, parities = collatz_accelerated(n, max_steps=max_steps)
+        #values, parities = collatz_accelerated(n, max_steps=max_steps)
 
-        self._draw_dashboard(values, parities, window, block_length)
-        self._update_summary(n, values, parities, window, block_length)
+        #self._draw_dashboard(values, parities, window, block_length)
+        #self._update_summary(n, values, parities, window, block_length)
 
         n = int(text)
         max_steps = self.max_steps_spin.value()
