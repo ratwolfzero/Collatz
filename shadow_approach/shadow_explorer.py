@@ -499,8 +499,19 @@ class CollatzShadowExplorer(QMainWindow):
         ax.set_ylabel("Normalized Complexity", color="#b0b0b0")
         ax.set_title(
             f"Rolling Lempel-Ziv Algorithmic Complexity (Window: {window})", color="#e0e0e0")
-        ax.legend(loc="upper right", frameon=False,
-                  labelcolor="#e0e0e0", fontsize=8)
+
+        # CONTROL POSITION HERE:
+        # loc="upper right" anchors the top-right corner of the legend box
+        # to the (x, y) coordinate specified in bbox_to_anchor.
+        # (1.0, 1.0) is the exact top-right corner of the axes.
+        # Adjust (0.98, 0.98) slightly to nudge it away from the borders.
+        ax.legend(
+            loc="upper right",
+            bbox_to_anchor=(0.75, 0.45),
+            frameon=False,
+            labelcolor="#e0e0e0",
+            fontsize=8
+        )
 
     def _draw_fft(self, ax, parities):
         if len(parities) < 4:
