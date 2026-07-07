@@ -540,6 +540,16 @@ class CollatzShadowExplorer(QMainWindow):
 
         corr = np.correlate(signal, signal, mode="full")
         corr = corr[len(signal) - 1:]
+
+        # ==========================================
+        # ADD THIS FIX HERE
+        # ==========================================
+        if corr[0] == 0:
+            ax.text(0.5, 0.5, "Zero variance (pure power of 2).",
+                    ha="center", va="center", color="#888888")
+            return
+        # ==========================================
+
         corr = corr / corr[0]
 
         ax.plot(corr, color="#63b3ed", linewidth=1.6)
