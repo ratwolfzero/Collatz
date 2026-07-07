@@ -1,6 +1,8 @@
 import os
 import sys
 from collections import Counter
+from PyQt6.QtGui import QRegularExpressionValidator
+from PyQt6.QtCore import QRegularExpression
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
@@ -18,6 +20,7 @@ from PyQt6.QtWidgets import (
     QGroupBox,
     QHBoxLayout,
     QLabel,
+    QLineEdit,
     QMainWindow,
     QMessageBox,
     QPushButton,
@@ -60,6 +63,30 @@ def collatz_accelerated(n, max_steps=1000):
             parities.append(1)
         values.append(x)
     return values, parities
+
+
+def lz_complexity(sequence):
+    """
+    Calculates dictionary-based Lempel-Ziv (LZ78) complexity.
+    Scans the sequence and counts the number of unique, non-overlapping 
+    vocabulary patterns required to construct it.
+    """
+    vocab = set()
+    prefix = ""
+    complexity = 0
+
+    for item in sequence:
+        prefix += str(item)
+        if prefix not in vocab:
+            vocab.add(prefix)
+            complexity += 1
+            prefix = ""
+
+    # Add 1 for the final trailing sequence if it didn't complete a new word
+    if prefix:
+        complexity += 1
+
+    return complexity
 
 
 class CollatzShadowExplorer(QMainWindow):
@@ -137,18 +164,22 @@ class CollatzShadowExplorer(QMainWindow):
         form_layout.setLabelAlignment(Qt.AlignmentFlag.AlignRight)
         form_layout.setSpacing(8)
 
-        self.start_value_spin = QSpinBox()
-        self.start_value_spin.setRange(1, 10**9)
-        self.start_value_spin.setValue(27)
-        form_layout.addRow("Initial Value:", self.start_value_spin)
+        self.start_value_edit = QLineEdit("27")
+
+        # Allow only positive integers
+        validator = QRegularExpressionValidator(
+            QRegularExpression(r"[1-9]\d*"))
+        self.start_value_edit.setValidator(validator)
+
+        form_layout.addRow("Initial Value:", self.start_value_edit)
 
         self.max_steps_spin = QSpinBox()
-        self.max_steps_spin.setRange(10, 10000)
-        self.max_steps_spin.setValue(1000)
+        self.max_steps_spin.setRange(10, 5000)
+        self.max_steps_spin.setValue(2000)
         form_layout.addRow("Max Steps:", self.max_steps_spin)
 
         self.window_spin = QSpinBox()
-        self.window_spin.setRange(4, 200)
+        self.window_spin.setRange(4, 2000)
         self.window_spin.setValue(30)
         form_layout.addRow("Rolling Window:", self.window_spin)
 
@@ -158,7 +189,8 @@ class CollatzShadowExplorer(QMainWindow):
         form_layout.addRow("Block Length:", self.block_length_spin)
 
         self.preset_combo = QComboBox()
-        self.preset_combo.addItems(["27", "19", "97", "871", "1003", "837799"])
+        self.preset_combo.addItems(
+            ["27", "97", "871", "6171", "77031", "837799", "8400511", "63728127", "670617279", "93571393692802302", "931386509544713451"])
         self.preset_combo.currentTextChanged.connect(self._apply_preset)
         form_layout.addRow("Quick Preset:", self.preset_combo)
         layout.addWidget(param_group)
@@ -177,6 +209,7 @@ class CollatzShadowExplorer(QMainWindow):
             "blocks": QCheckBox("Block Recurrence Metric"),
             "turtle": QCheckBox("2D Turtle Walk (Fractal)"),
             "entropy": QCheckBox("Shannon Block Entropy"),
+            "lz_complexity": QCheckBox("Lempel-Ziv Algorithmic Complexity"),
             "fft": QCheckBox("Power Spectrum (FFT)"),
             "network": QCheckBox("Observed Block Transition Network"),
             "autocorr": QCheckBox("Autocorrelation Lag"),
@@ -230,10 +263,31 @@ class CollatzShadowExplorer(QMainWindow):
 
     def _apply_preset(self, value):
         if value:
-            self.start_value_spin.setValue(int(value))
+            self.start_value_edit.setText(value)
 
     def refresh_plot(self):
-        n = self.start_value_spin.value()
+        text = self.start_value_edit.text().strip()
+
+        if not text:
+            QMessageBox.warning(
+                self,
+                "Invalid Input",
+                "Please enter a positive integer."
+            )
+            return   # <-- MUST be inside the if block
+
+        #n = int(text)
+
+        #max_steps = self.max_steps_spin.value()
+        #window = self.window_spin.value()
+        #block_length = self.block_length_spin.value()
+
+        #values, parities = collatz_accelerated(n, max_steps=max_steps)
+
+        #self._draw_dashboard(values, parities, window, block_length)
+        #self._update_summary(n, values, parities, window, block_length)
+
+        n = int(text)
         max_steps = self.max_steps_spin.value()
         window = self.window_spin.value()
         block_length = self.block_length_spin.value()
@@ -310,7 +364,7 @@ class CollatzShadowExplorer(QMainWindow):
             chunk = signal[i: i + window]
             # Mean-center the chunk
             chunk -= np.mean(chunk)
-            
+
             fft_vals = np.abs(np.fft.rfft(chunk))
             psd = fft_vals**2
             psd_sum = np.sum(psd)
@@ -340,7 +394,7 @@ class CollatzShadowExplorer(QMainWindow):
     # PORTED SUBPLOT VISUALIZATION SUITE
     # =========================================================================
 
-    def _draw_de_bruijn_network(self, ax, parities, block_length):
+    def _draw_observed_nlock_transition_network(self, ax, parities, block_length):
         if len(parities) < block_length + 1:
             ax.text(0.5, 0.5, "Insufficient step counts for maps.",
                     ha="center", va="center", color="#888888")
@@ -413,17 +467,63 @@ class CollatzShadowExplorer(QMainWindow):
         ax.set_title(
             f"Rolling Shannon Entropy (Window: {window}, Block: {block_length})", color="#e0e0e0")
 
+    def _draw_lz_complexity(self, ax, parities, window):
+        if len(parities) < window + 2:
+            ax.text(0.5, 0.5, "Orbit too short for LZ complexity.",
+                    ha="center", va="center", color="#888888")
+            return
+
+        lz_values = []
+        positions = []
+        N = max(2, window)
+
+        # 1. Compute the EXACT maximum possible LZ78 phrases for finite N
+        k = 1
+        bits_used = 0
+        max_lz = 0
+        while bits_used + (k * (2**k)) <= N:
+            bits_used += k * (2**k)
+            max_lz += 2**k
+            k += 1
+        # Add any remaining fractional phrases from the leftover bits
+        max_lz += (N - bits_used) // k
+
+        # 2. Compute rolling window values
+        for i in range(len(parities) - window + 1):
+            chunk = parities[i: i + window]
+            raw_lz = lz_complexity(chunk)
+
+            # Normalize against the true physical upper bound
+            normalized_lz = raw_lz / max_lz
+            lz_values.append(normalized_lz)
+            positions.append(i + window / 2)
+
+        # 3. Plotting Updates
+        ax.plot(positions, lz_values, linewidth=1.8, color="#e53e3e")
+        ax.fill_between(positions, lz_values, 0, color="#e53e3e", alpha=0.15)
+
+        # A value of 1.0 now strictly means "maximum possible entropy/disorder"
+        ax.axhline(1.0, color="#718096", linestyle="--", linewidth=1.2,
+                   alpha=0.8, label="Theoretical Randomness Limit")
+
+        ax.set_ylim(0, 1.1)
+        ax.set_ylabel("Normalized Complexity", color="#b0b0b0")
+        ax.set_title(
+            f"Rolling Lempel-Ziv Algorithmic Complexity (Window: {window})", color="#e0e0e0")
+        ax.legend(loc="upper right", frameon=False,
+                  labelcolor="#e0e0e0", fontsize=8)
+
     def _draw_fft(self, ax, parities):
         if len(parities) < 4:
             return
         signal = np.array(parities, dtype=float) * 2 - 1
         # Remove DC component
         signal -= np.mean(signal)
-        
+
         fft_vals = np.abs(np.fft.rfft(signal))
         power = fft_vals**2
         freqs = np.fft.rfftfreq(len(signal))
-        
+
         ax.plot(freqs, power, color="#ed8936", linewidth=1.5)
         ax.fill_between(freqs, power, 0, color="#ed8936", alpha=0.15)
         ax.set_ylabel("Power", color="#b0b0b0")
@@ -437,11 +537,21 @@ class CollatzShadowExplorer(QMainWindow):
         signal = np.array(parities, dtype=float) * 2 - 1
         # Remove DC component
         signal -= np.mean(signal)
-        
+
         corr = np.correlate(signal, signal, mode="full")
         corr = corr[len(signal) - 1:]
+
+        # ==========================================
+        # ADD THIS FIX HERE
+        # ==========================================
+        if corr[0] == 0:
+            ax.text(0.5, 0.5, "Zero variance (pure power of 2).",
+                    ha="center", va="center", color="#888888")
+            return
+        # ==========================================
+
         corr = corr / corr[0]
-        
+
         ax.plot(corr, color="#63b3ed", linewidth=1.6)
         ax.fill_between(range(len(corr)), corr, 0, alpha=0.15, color="#63b3ed")
         ax.set_title("Autocorrelation (Parity Memory)", color="#e0e0e0")
@@ -540,6 +650,7 @@ class CollatzShadowExplorer(QMainWindow):
             "blocks": 1.0,
             "turtle": 2.0,
             "entropy": 1.0,
+            "lz_complexity": 1.0,
             "fft": 1.0,
             "network": 2.0,
             "autocorr": 1.0,
@@ -627,11 +738,15 @@ class CollatzShadowExplorer(QMainWindow):
             elif panel == "entropy":
                 self._draw_shannon_entropy(ax, parities, window, block_length)
 
+            elif panel == "lz_complexity":
+                self._draw_lz_complexity(ax, parities, window)
+
             elif panel == "fft":
                 self._draw_fft(ax, parities)
 
             elif panel == "network":
-                self._draw_de_bruijn_network(ax, parities, block_length)
+                self._draw_observed_nlock_transition_network(
+                    ax, parities, block_length)
 
             elif panel == "autocorr":
                 self._draw_autocorrelation(ax, parities)
@@ -671,7 +786,7 @@ class CollatzShadowExplorer(QMainWindow):
         out_dir = os.path.join(os.path.dirname(__file__), "shadow_figures")
         os.makedirs(out_dir, exist_ok=True)
         out_path = os.path.join(
-            out_dir, f"collatz_dynamics_matrix_{self.start_value_spin.value()}.png")
+            out_dir, f"collatz_dynamics_matrix_{self.start_value_edit.text()}.png")
         self.figure.savefig(out_path, dpi=300, bbox_inches="tight")
         QMessageBox.information(
             self, "Export Complete", f"High-fidelity matrix profile saved to:\n{out_path}")
