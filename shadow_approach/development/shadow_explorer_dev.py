@@ -390,7 +390,7 @@ class CollatzShadowExplorer(QMainWindow):
         ax.set_ylim(0, 1.05)
         ax.set_title(f"Rolling Spectral Entropy (Window: {window})", color="#e0e0e0")
 
-    def _draw_observed_nlock_transition_network(self, ax, sequence, block_length):
+    def _draw_observed_block_transition_network(self, ax, sequence, block_length):
         if len(sequence) < block_length + 1: return
         
         fmt = lambda x: f"{x:.1f}" if isinstance(x, float) else str(x)
@@ -669,7 +669,7 @@ class CollatzShadowExplorer(QMainWindow):
             elif panel == "fft":
                 self._draw_fft(ax, sequence)
             elif panel == "network":
-                self._draw_observed_nlock_transition_network(ax, sequence, block_length)
+                self._draw_observed_block_transition_network(ax, sequence, block_length)
             elif panel == "autocorr":
                 self._draw_autocorrelation(ax, sequence)
             elif panel == "heatmap":

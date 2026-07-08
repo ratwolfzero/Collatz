@@ -383,7 +383,7 @@ class CollatzShadowExplorer(QMainWindow):
     # PORTED SUBPLOT VISUALIZATION SUITE
     # =========================================================================
 
-    def _draw_observed_nlock_transition_network(self, ax, parities, block_length):
+    def _draw_observed_block_transition_network(self, ax, parities, block_length):
         if len(parities) < block_length + 1:
             ax.text(0.5, 0.5, "Insufficient step counts for maps.",
                     ha="center", va="center", color="#888888")
@@ -745,7 +745,7 @@ class CollatzShadowExplorer(QMainWindow):
                 self._draw_fft(ax, parities)
 
             elif panel == "network":
-                self._draw_observed_nlock_transition_network(
+                self._draw_observed_block_transition_network(
                     ax, parities, block_length)
 
             elif panel == "autocorr":
