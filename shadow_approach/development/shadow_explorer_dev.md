@@ -12,7 +12,7 @@ If one records the orbit as a sequence of discrete dynamical events, the resulti
 
 * **Parity Shadow:** The classical binary encoding tracking the strict even/odd decision path ($0$ or $1$).
 * **Valuation Shadow:** A 2-adic tracking layer mapping the exact power of 2 ($v$) dividing the trajectory immediately following an expansion step ($3x + 1$).
-* **Energy Shadow:** A continuous metric tracking the net localized expansion or contraction of the system, scaling the valuation against the fundamental growth factor ($\log_2(3)$).
+* **Energy Shadow:** A real-valued metric tracking net localized expansion/contraction per step, scaling the 2-adic valuation against the fundamental growth factor ($\log_2(3)$).
 
 This multi-shadow perspective provides a genuine simplification of the representation, allowing us to analyze the numerical complexity of the Collatz problem through the lens of data stream processing and signal complexity.
 
@@ -21,7 +21,9 @@ This multi-shadow perspective provides a genuine simplification of the represent
 This perspective uses a synchronized *accelerated* (or shortcut) Collatz map to cleanly decouple and analyze these shadows simultaneously. Under this formulation:
 
 * If **$n$ is even**: $\text{next} = n / 2$
-* If **$n$ is odd**: The system extracts the metrics for the raw expansion block ($y = 3n + 1$). It computes the $2$-adic valuation ($v$), records the contraction energy, and then executes the accelerated step: $\text{next} = y / 2$.
+* If **$n$ is odd**: The system extracts the metrics for the raw expansion block ($y = 3n + 1$). It computes the $2$-adic valuation ($v$) of the full expansion (recording the contraction energy), and then executes the accelerated step: $\text{next} = y / 2$.
+
+By stepping forward by exactly $(3n + 1) // 2$ during an odd operation, the sequence maintains a perfect 1-to-1 tracking alignment with the classic accelerated parity word. The valuation spike at each odd step records the *entire* divisibility event at that index, even though the accelerated map jumps ahead; any remaining halving steps are processed one iteration at a time in subsequent even steps.
 
 By stepping forward by exactly $(3n + 1) // 2$ during an odd operation, the sequence maintains a perfect 1-to-1 tracking alignment with the classic accelerated parity word. When a significant contraction occurs (e.g., $3n + 1$ is highly divisible by 2), the system captures the complete valuation spike at that exact index, allowing the subsequent divisions by 2 to be naturally swept through and evaluated in the following iterations.
 
@@ -56,7 +58,7 @@ The application allows you to select and stack up to four concurrent analytical 
 
 * **2D Turtle Walk (Fractal) `[Parity Mode Only]`:** Treats the binary parity word as spatial instructions (0 = Left 60°, 1 = Right 60°) on a 2D plane. This maps the parity sequence into geometric space to expose structural fractal symmetries.
 * **Contraction Spectrogram `[Valuation Mode Only]`:** A discrete spectrogram charting the exact power of 2 division events ($v$) that occur at every odd junction, mapping the exact locations of massive structural collapses.
-* **Cumulative Drift `[Adaptive Label]`:** In **Parity Mode**, this tracks the running imbalance between odd and even steps, visualizing the system's binary bias. In **Energy Mode**, it transforms into a *Cumulative Energy Drift* chart, accumulating the metric $\sum (v - \log_2(3))$ to track whether an orbit is in a net-expansionary or net-contractionary thermodynamic state.
+* **Cumulative Drift `[Adaptive Label]`:** In **Parity Mode**, this tracks the running imbalance between odd and even steps, visualizing the system's binary bias. In **Energy Mode**, it transforms into a *Cumulative Energy Drift* chart, accumulating the metric $\sum (v - \log_2(3))$ to track whether an orbit is in a net-expansionary or net-contractionary state (using thermodynamic language only metaphorically).
 
 ## What this perspective is
 
@@ -64,7 +66,7 @@ This viewpoint is best understood as a coordinate transformation. It highlights 
 
 * The Collatz map can be studied through multiple parallel symbolic shadows.
 * The combinatorial features can be completely isolated from the raw numerical data stream.
-* The arithmetic difficulty of the conjecture is pushed entirely into the rules governing which specific sequences are permitted to arise from base-10 integers.
+* The arithmetic difficulty of the conjecture is pushed entirely into the rules governing which specific sequences are permitted to arise from rom positive integers.
 
 In this sense, the problem is recast as a question about how arithmetic constraints dictate the structure of permissible binary or valuation words under a 2-adic mapping framework.
 
