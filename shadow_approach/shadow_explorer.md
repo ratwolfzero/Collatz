@@ -80,3 +80,21 @@ pip install PyQt6 matplotlib numpy networkx
 
 # Launch the explorer
 python shadow_explorer.py
+
+```
+
+## References and Further Reading
+
+Terras, R. (1976). A stopping time problem on the positive integers. *Acta Arithmetica*, 30(3), 241–252.
+Tao, T. (2019). Almost all Collatz orbits attain almost bounded values. arXiv:1909.03562.
+[arXiv link](https://arxiv.org/abs/1909.03562)
+
+Lagarias, J. C. (Ed.). (2010). *The Ultimate Challenge: The 3x + 1 Problem*. American Mathematical Society.
+[AMS Bookstore](https://bookstore.ams.org/mbk-78)
+
+A quick note on the links provided:
+The Terras link points to the European Digital Mathematics Library (EuDML), which hosts a free, open-access scan of the original 1976 paper.
+
+The Tao link points directly to the official arXiv repository page where readers can download the PDF for free.
+
+The Lagarias link directs to the official American Mathematical Society (AMS) bookstore page for the volume.**
