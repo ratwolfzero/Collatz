@@ -99,4 +99,4 @@ The Terras link points to the European Digital Mathematics Library (EuDML), whic
 
 The Tao link points directly to the official arXiv repository page where readers can download the PDF for free.
 
-The Lagarias link directs to the official American Mathematical Society (AMS) bookstore page for the volume.**
+The Lagarias link directs to the official American Mathematical Society (AMS) bookstore page for the volume.
