@@ -94,6 +94,7 @@ Lagarias, J. C. (Ed.). (2010). *The Ultimate Challenge: The 3x + 1 Problem*. Ame
 [AMS Bookstore](https://bookstore.ams.org/mbk-78)
 
 A quick note on the links provided:
+
 The Terras link points to the European Digital Mathematics Library (EuDML), which hosts a free, open-access scan of the original 1976 paper.
 
 The Tao link points directly to the official arXiv repository page where readers can download the PDF for free.
