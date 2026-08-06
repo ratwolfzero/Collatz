@@ -85,7 +85,8 @@ python shadow_explorer.py
 
 ## References and Further Reading
 
-Terras, R. (1976). A stopping time problem on the positive integers. *Acta Arithmetica*, 30(3), 241–252.
+Terras, R. (1976). A stopping time problem on the positive integers. *Acta Arithmetica*, 30(3), 241–252. https://eudml.org/doc/205476
+
 Tao, T. (2019). Almost all Collatz orbits attain almost bounded values. arXiv:1909.03562.
 [arXiv link](https://arxiv.org/abs/1909.03562)
 
